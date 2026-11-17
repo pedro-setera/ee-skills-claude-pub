@@ -1,0 +1,109 @@
+# Layout study for a made-up small device: a bench data logger with a power board, a processor board and a display.
+# Units mm. Frame: origin at the INNER front-left-bottom corner, x right, y back, z up; faces are front (-y), back (+y),
+# left (-x), right (+x), bottom (-z), top (+z). Copy, rename, run:
+#     python -I scripts/layout_study.py layout.toml --out out
+# Arrangement A is meant to pass every row. Arrangement B fails two rows on purpose (noisy and sensitive boards 7 mm apart and
+# a small intake), so the comparison table has something to show.
+
+[study]
+name = "bench data logger"
+wall = 2.0
+fan_clear_mm = 15          # nothing within this distance in front of a fan (inside the box)
+noisy_sensitive_mm = 30    # smallest gap between a "noisy" block and a "sensitive" block
+block_gap_mm = 1.0         # smallest gap between any two blocks
+reach_gap_mm = 1.5         # a panel connector's block face may be at most this far from the inner wall
+intake_ratio = [1.1, 1.5]  # passive open area / swept area of the fans blowing one way: passes from 1.1; above 1.5 only a note
+                           # (the thermal figures per part, theta_ca, live in the heat file: heat.example.toml, marked as example figures)
+default_bend_r = 6
+
+[parts.psu]
+size = [50, 35, 22]
+heat_w = 4.0
+tags = ["noisy"]
+connectors = [
+  { name = "dc_in", face = "back", panel = true },
+  { name = "out", face = "top" },
+  { name = "out_side", face = "right" },
+]
+
+[parts.cpu]
+size = [45, 35, 14]
+heat_w = 1.5
+tags = ["sensitive"]
+connectors = [
+  { name = "in", face = "top" },
+  { name = "in_side", face = "right" },
+  { name = "usb", face = "back", panel = true },
+]
+
+[parts.display]
+size = [30, 25, 8]
+heat_w = 0.3
+
+# ---------------------------------------------------------------- A: boards side by side, a fan between them on the back wall
+[variant.A]
+title = "Side by side, back fan"
+inner = [145, 60, 42]
+
+[variant.A.place.psu]
+pos = [4, 24.5, 2]
+
+[variant.A.place.cpu]
+pos = [96, 24.5, 2]
+
+[variant.A.place.display]
+pos = [57, 2, 2]
+
+[[variant.A.fan]]
+name = "f1"
+face = "back"
+centre = [75, 21]
+size = 40
+direction = "out"
+
+[[variant.A.vent]]
+name = "in1"
+face = "front"
+rect = [10, 5, 135, 28]
+open_fraction = 0.4
+kind = "intake"
+
+[[variant.A.cable]]
+name = "c1"
+from = "psu.out"
+to = "cpu.in"
+bend_r = 6
+
+# ---------------------------------------------------------------- B: boards stacked, a side fan
+[variant.B]
+title = "Stacked, side fan"
+inner = [100, 60, 60]
+
+[variant.B.place.psu]
+pos = [4, 24.5, 2]
+
+[variant.B.place.cpu]
+pos = [4, 24.5, 31]
+
+[variant.B.place.display]
+pos = [4, 2, 48]
+
+[[variant.B.fan]]
+name = "f1"
+face = "right"
+centre = [30, 20]
+size = 40
+direction = "out"
+
+[[variant.B.vent]]
+name = "in1"
+face = "left"
+rect = [5, 5, 55, 45]
+open_fraction = 0.3
+kind = "intake"
+
+[[variant.B.cable]]
+name = "c1"
+from = "psu.out_side"
+to = "cpu.in_side"
+bend_r = 6

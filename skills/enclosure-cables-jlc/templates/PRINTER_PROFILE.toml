@@ -1,0 +1,64 @@
+# PRINTER_PROFILE.toml: the user's printer, materials and measured numbers.
+# Lives in the user's home folder (for example ~/.claude/enclosure-cables/PRINTER_PROFILE.toml), NEVER in the skill.
+# mech.toml points to it with [printer] profile. Asked once (phase 1), measured with the test coupon (phase 6),
+# corrected after each print (phase 7) with the user's OK. Empty values = not known yet.
+
+[printer]                       # read by print_check.py
+name = ""                       # make and model
+# bed = [220, 220, 250]        # x, y, z in mm: SET IT (when missing, 220 x 220 x 250 is assumed)
+nozzle = 0.4
+line_width = 0.45
+layer_height = 0.2
+enclosed = false                # for people: a closed, heated chamber or not
+multi_material = ""             # for people: feeder unit, second nozzle, or none
+
+[rules]                         # read by print_check.py
+max_overhang_deg = 45
+bridge_max_mm = 8
+min_wall_lines = 2
+# hole_shrink_mm = 0.3          # MEASURED with the coupon: how much smaller a hole prints than drawn (0.3 assumed until then)
+# section_step = 0.5
+# min_overhang_area = 1.0
+# step_small_mm = 8
+# min_flat_area = 30
+
+[slicer]                        # read by print_check.py --slice; the files are COPIED, never changed
+kind = ""                       # bambu | orca | prusa (for people; mech.toml [tools] slicer_kind is what the scripts read)
+machine = ""                    # full path of the machine preset file (Bambu, Orca)
+process = ""                    # full path of the process preset file
+filament = ""                   # full path of the filament preset file
+# config = ""                   # Prusa: one settings file
+preset_names = { machine = "", process = "", filament = "" }    # the names as the slicer shows them
+
+[coupon]                        # read by print_check.py --coupon
+thickness = 3.0
+screws = ["M2", "M2.5", "M3"]
+
+# ---- for people (no script reads the rest) ----------------------------------------------------------------------
+
+[supports]
+handled_well = ""               # yes | no | unknown: asked in phase 6; "yes" means shapes stay simple
+
+[[materials]]
+name = ""                       # material and brand
+use = ""                        # concept | final | soft parts
+nozzle_c = ""
+bed_c = ""
+drying = ""
+notes = ""
+
+[measured]                      # from the coupon and from prints; each with its date
+date = ""
+hole_shrink_mm = ""             # the same number as [rules] hole_shrink_mm
+self_tap_pilot = { M2 = "", "M2.5" = "", M3 = "" }     # the drawn hole that held each screw well
+clearance_hole = { M2 = "", "M2.5" = "", M3 = "" }     # the drawn hole each screw passed freely
+tab_slot_clearance = ""         # clearance per side that fitted (sliding fit)
+lid_clearance = ""              # clearance per side of a lid that fitted
+overhang_ok_deg = ""            # steepest clean overhang of the ladder
+
+[soft_material]                 # TPU and similar
+path = ""                       # which spool path and nozzle the printer maker's guide allows for soft filament
+guide_read = ""                 # title and date of the maker's page that was read
+hardness = ""
+undersize_per_side = ""         # how much smaller a stretched frame was printed, and whether it fitted
+result = ""                     # what was printed and how it fitted

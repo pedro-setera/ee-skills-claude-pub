@@ -1,0 +1,22 @@
+[
+  {"query": "Design a 3D-printed enclosure for my 60 x 40 mm board with a USB-C cut-out and screw posts.", "should_trigger": true},
+  {"query": "I need the aluminium sheet-metal version of my printed box, to order at JLCCNC with powder coat and silkscreen.", "should_trigger": true},
+  {"query": "Make the drawings for a JST PH 4-pin to 4-pin harness and fill the LCSC Cable quote form.", "should_trigger": true},
+  {"query": "How long should the coax from the u.FL on my board to the SMA on the rear panel be?", "should_trigger": true},
+  {"query": "Check my sheet-metal STEP against the supplier's bend and hole-to-bend rules before I upload it.", "should_trigger": true},
+  {"query": "The cable maker sent production drawings for my 5 cables; check them before I confirm.", "should_trigger": true},
+  {"query": "Will a 40 mm fan be enough for 12 W in a 150 x 100 x 50 mm box, and how big should the vents be?", "should_trigger": true},
+  {"query": "My powder-coated case arrived; give me the incoming check list and the fit check.", "should_trigger": true},
+  {"query": "Write an assembly manual with pictures for my device's case.", "should_trigger": true},
+  {"query": "Is there a standard plastic case my board fits into, with cut front and rear panels?", "should_trigger": true},
+  {"query": "Design the schematic for a 5 V to 3.3 V buck converter on my board.", "should_trigger": false},
+  {"query": "Route the PCB of my sensor board in KiCad and make the Gerbers for JLCPCB.", "should_trigger": false},
+  {"query": "Write firmware for the ESP32 to read a temperature sensor.", "should_trigger": false},
+  {"query": "Slice this STL of a phone stand in Bambu Studio for me.", "should_trigger": false},
+  {"query": "Make a logo for my company in SVG.", "should_trigger": false},
+  {"query": "What is the current price of aluminium per kilogram?", "should_trigger": false},
+  {"query": "Model a garden shed in SketchUp.", "should_trigger": false},
+  {"query": "Explain how a crimp tool works.", "should_trigger": false},
+  {"query": "Order 10 resistors from LCSC for my board.", "should_trigger": false},
+  {"query": "Write a Python script that renames my photos by date.", "should_trigger": false}
+]

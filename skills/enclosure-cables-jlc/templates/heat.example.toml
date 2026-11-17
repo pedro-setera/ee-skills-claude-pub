@@ -1,0 +1,42 @@
+# Heat table for the made-up bench data logger of layout.example.toml. Every number is an ESTIMATE: prove it on the bench.
+# Run:  python -I scripts/heat_air.py heat.toml --out out        (the layout is read for the sensitive-part and no-path flags)
+
+[heat]
+name = "bench data logger"
+ambient_c = 25
+derate = 0.5               # share of the fan's free-air flow that really moves through the box
+target_rise_k = 10         # allowed air temperature rise inside the box
+margin_k = 10              # headroom under each part's maximum
+layout = "layout.example.toml"
+variant = "A"
+
+[box]
+outer = [149, 64, 46]
+wall_t = 2.0
+material = "aluminium"
+
+[[part]]
+name = "psu"               # same name as the block in the layout
+watts = 4.0
+max_c = 85
+heat_sink = true
+theta_ca = 6.0             # K/W case to air, from the part's data sheet. EXAMPLE FIGURE: replace it with the data sheet's value.
+                           # A part without theta_ca gets only an estimate (25 K/W, or 6 K/W with a heat sink); its row is "could not run".
+tags = ["noisy"]
+
+[[part]]
+name = "cpu"
+watts = 1.5
+max_c = 85
+theta_ca = 10.0            # EXAMPLE FIGURE, from a data sheet in a real project
+tags = ["sensitive"]
+
+[[part]]
+name = "display"
+watts = 0.3
+max_c = 70
+theta_ca = 20.0            # EXAMPLE FIGURE, from a data sheet in a real project
+
+[[fan]]
+name = "f1"                # same name as the fan in the layout (size, direction and swept area are taken from it)
+free_air_m3h = 12.0        # from the fan's data sheet, at the supply voltage used (cfm * 1.699 = m3/h)

@@ -1,0 +1,59 @@
+# Assembly manual steps for the made-up bench data logger. Copy to <project>/manual/steps.toml and change.
+# Each step needs a picture: `shot = "name"` looks for name.png in out/manual/annotated, out/renders, then out/views;
+# `picture = "pictures/x.png"` is a file next to this one. Pictures must be newer than the model (rebuild them after a model change).
+# Run:  python -I scripts/manual_build.py manual/steps.toml --pdf --png      then LOOK at every page picture.
+
+[manual]
+title = "Bench data logger"
+subtitle = "Assembly manual"
+company = ""
+revision = "A"
+edition = "2026-01-01"
+cover_picture = "exploded"          # a shot or a file (optional)
+
+# The parts list: what is in the box. `model` = the solid's name in the model (used to check the order against ASSEMBLY_ORDER).
+[[part]]
+name = "Shell"
+qty = 1
+model = "shell"
+
+[[part]]
+name = "Standoff"
+qty = 4
+model = "stand"
+
+[[part]]
+name = "Power board"
+qty = 1
+model = "psu"
+
+[[part]]
+name = "Lid"
+qty = 1
+model = "lid"
+
+[[step]]
+title = "Fit the standoffs"
+text = ["Screw the four standoffs into the floor of the shell.", "Tighten by hand, then a quarter turn with the spanner."]
+shot = "step01"
+parts = [ {name = "Shell", qty = 1}, {name = "Standoff", qty = 4} ]
+tools = ["spanner 5.5"]
+warning = "Do not overtighten: the thread in the floor strips."
+threadlocker = true
+
+[[step]]
+title = "Place the power board"
+text = ["Lower the board onto the standoffs, connector end to the back wall."]
+shot = "step02"
+parts = [ {name = "Power board", qty = 1} ]
+fasteners = [ {name = "M2.5 x 6 pan head", qty = 4, drive = "cross"} ]
+tools = ["cross PH1"]
+
+[[step]]
+title = "Close the box"
+text = ["Press the lid on until it clicks.", "Fit the four lid screws."]
+shot = "step03"
+parts = [ {name = "Lid", qty = 1} ]
+fasteners = [ {name = "M3 x 8 button head", qty = 4, drive = "hex"} ]
+tools = ["hex 2.0"]
+open = ["Confirm the lid screw length on the first printed box."]

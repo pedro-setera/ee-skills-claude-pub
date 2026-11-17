@@ -1,0 +1,9 @@
+# <project>/mech/waivers.toml: rows the user accepted in writing as named risks. Nothing is waived unless it is written here.
+# check_all.py prints each failed or could-not-run row that matches as WAIVED (reason, who, date) and counts it apart.
+# All four keys are required. id = a row id, or a glob such as "PRT-OVH-*" (a bare "*" is refused).
+# A STALE row (its input changed after the check) is never waived: run the check again first.
+[[waiver]]
+id = "HEAT-02"
+reason = "the printed concept lid is not the product; the user accepted the estimate"
+who = "the user, in chat"
+date = "2026-01-01"

@@ -1,0 +1,40 @@
+# Stiffness of a made-up lid, bracket and flange. Run:  python -I scripts/stiffness.py stiffness.example.toml --out out
+[stiffness]
+load_n = 20          # a firm push
+guide_mm = 0.3       # allowed deflection under that push
+
+[[item]]
+name = "lid"
+kind = "plate"
+material = "aluminium 5052"
+t = 1.5
+a = 150
+b = 100
+edges = "simply"
+
+[[item]]
+name = "lid, 3D printed"
+kind = "plate"
+material = "PLA"
+t = 2.0
+a = 150
+b = 100
+edges = "clamped"
+
+[[item]]
+name = "mounting flange"
+kind = "cantilever"
+material = "aluminium 5052"
+t = 1.5
+L = 12
+b = 30
+
+[[item]]
+name = "angle bracket"
+kind = "angle"
+material = "steel"
+t = 2.0
+leg_a = 20
+leg_b = 20
+L = 60
+support = "simple"

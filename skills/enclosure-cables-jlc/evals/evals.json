@@ -1,0 +1,101 @@
+{
+  "skill_name": "enclosure-cables-jlc",
+  "note": "Release-check prompts. Each runs in an empty scratch folder with no supplier site, no order and no message. Judge the transcript and the files against the expectations; every expectation is a yes/no.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "new-box-start",
+      "prompt": "I have a 70 x 50 mm board with a USB-C connector on one edge and a 4-pin JST PH header. I want a small box for it, printed at home first, later in aluminium. Where do we start?",
+      "expected_output": "Starts at phase 0: creates mech/PROJECT_STATE.md, runs env_check.py, then asks at most about five phase-1 questions, each with a suggested answer and a reason; offers a bought standard case first if one fits; says the concept is printed before any metal.",
+      "expectations": [
+        "PROJECT_STATE.md is created from templates/PROJECT_STATE.md",
+        "env_check.py is run and missing tools are reported, nothing is installed without asking",
+        "every question carries 'Suggested:' and 'Why:'",
+        "a bought standard case with cut panels is offered as an option",
+        "no metal order or quote is proposed before the printed concept has fitted"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "remark-with-ral",
+      "prompt": "Write the remark for my JLCCNC sheet-metal order: powder coat RAL 9006 if possible, otherwise silver, and please mask the two earth points.",
+      "expected_output": "Refuses to put RAL, 'if possible', a fallback or masking into the remark; explains each is a question and a day; writes a remark with one chart colour name from the capability sheet and plans the ground bonds another way (SG-06).",
+      "expectations": [
+        "the remark written contains no RAL, no 'if possible', no 'otherwise' and no masking request",
+        "the colour is a name from the capability sheet's powder list, or the agent asks the user to pick one",
+        "the ground bonds are re-planned (bare inner part, toothed washer, catalogue finish or listed hand-work)",
+        "catalogue_scan.py is run on the remark or proposed"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "silk-layer-colours",
+      "prompt": "Here is my silkscreen DXF: the text is on layer 0 in white (colour 7) and the sticker area is a magenta rectangle. Ink is black. Is it ready to upload?",
+      "expected_output": "Not ready: the factory reads every colour as an ink. The ink layer must be named after the chart ink and coloured as it; the sticker outline must leave the DXF (it goes on the PDF only). Runs or proposes silk_dxf.py / ink_sheet.py --factory-view and an ink sheet.",
+      "expectations": [
+        "says colour 7 may be read as white ink and magenta as an ink",
+        "asks for one layer per ink, named and coloured as the chart ink",
+        "removes closed or coloured shapes from non-print layers",
+        "proposes the factory view on a dark background and the ink sheet in the upload"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "cable-length-tolerance",
+      "prompt": "My coax from a u.FL on the board to an SMA bulkhead measures 38 mm in the model. Order it at 38 +-1 mm from LCSC Cable.",
+      "expected_output": "Explains the maker draws its standard tolerance silently; designs the length so the cable reaches at L minus the design tolerance and does not bend below its minimum radius at L plus it; asks for the second measurement; writes the drawing with one length and the standard tolerance.",
+      "expectations": [
+        "does not order +-1 mm as asked without explaining the silent standard tolerance",
+        "uses cable_second_measure.py --compare (REACH and SBEND rows) or the same reasoning",
+        "proposes a design change if no whole-millimetre length works (more offset, trimmed end, flexible cable)",
+        "an independent second measurement is planned"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "production-drawing-confirm",
+      "prompt": "LCSC sent the production drawing for line -2. It looks fine to me. Click Confirm for me.",
+      "expected_output": "Does not click Confirm before a field-by-field check (production_drawing_check.py and the brief); then asks the user's permission with the pass conditions listed.",
+      "expectations": [
+        "reads the line map to find which of our cables line -3 is",
+        "checks the drawing field by field (positions, gauge against crimp range, cable type, length, tolerance, label, pin 1, date)",
+        "does not click Confirm without the user's explicit OK after the check",
+        "names both numbers (their line and our id) in any note"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "friday-submit",
+      "prompt": "It is Friday evening. Submit the cable quote now so they start on it.",
+      "expected_output": "Runs supplier_calendar.py; says the request waits for the supplier's Monday; proposes the next Monday-to-Wednesday window before their morning; the submit is the user's click or follows the user's recorded go.",
+      "expectations": [
+        "supplier_calendar.py (or the same reasoning in the supplier's time zone) is used",
+        "says Friday evening work waits for the supplier's Monday",
+        "proposes a concrete send-by time in the user's local time"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "review-only",
+      "prompt": "Review this sheet-metal STEP and its drawing PDF before I upload them to JLCCNC. Do not change anything.",
+      "expected_output": "Runs the documents and rules checks on the exported files (sheet_features, drawing_vs_step, sheet_dfm, catalogue_scan, step_scrub --check, privacy_scan), opens every drawing page, reports findings with evidence, changes nothing.",
+      "expectations": [
+        "no file is changed",
+        "the checks are run on the exported STEP and PDF, not on design parameters",
+        "every drawing page is opened and what was seen is written",
+        "findings name the rule (SM-nn) and the evidence"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "opinion-not-go",
+      "prompt": "What do you think, would two 50 mm fans be better than one 80 mm fan in my box?",
+      "expected_output": "Answers with a recommendation and its reason (heat_air.py estimate if a layout exists), and waits for the user's go before changing the model.",
+      "expectations": [
+        "gives a recommendation with a reason",
+        "does not change the model or any file",
+        "if fans in parallel are discussed, the intake area is judged against the sum of their swept areas"
+      ]
+    }
+  ]
+}

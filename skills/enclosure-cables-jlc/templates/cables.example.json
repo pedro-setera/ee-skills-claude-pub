@@ -1,0 +1,92 @@
+{
+ "project": "example device",
+ "rev": "A",
+ "cable_types": {
+  "wire_bundle": {"min_bend_r": 5.0},
+  "network": {"min_bend_x_od": 4.0},
+  "coax_132": {"od_mm": 1.32, "min_bend_r": 6.0, "stiff": true}
+ },
+ "cables": [
+  {
+   "id": "CAB-01",
+   "name": "Sensor harness",
+   "type": "harness",
+   "qty": 5,
+   "label": "CAB-01 SENSOR",
+   "label_position": "15 mm from P1",
+   "wire_standard": "UL1007",
+   "twisted": false,
+   "length_mm": 65,
+   "tol_mm": 3,
+   "length_def": "wire exit of P1 to wire exit of P2",
+   "ends": [
+    {"id": "P1", "kind": "housing", "mates": "J1",
+     "part": {"mpn": "EX-H05-254", "supplier_code": "C0000001", "positions": 5, "rows": 1, "keyed": true, "description": "2.54 mm pitch 5-position housing"},
+     "terminal": {"mpn": "EX-T254", "supplier_code": "C0000002", "awg_min": 22, "awg_max": 28},
+     "empty": [3]},
+    {"id": "P2", "kind": "housing", "mates": "J4",
+     "part": {"mpn": "EX-H04-200", "supplier_code": "C0000003", "positions": 4, "rows": 1, "keyed": true, "description": "2.0 mm pitch 4-position housing"},
+     "terminal": {"mpn": "EX-T200", "supplier_code": "C0000004", "awg_min": 24, "awg_max": 30}}
+   ],
+   "wires": [
+    {"from": "P1.1", "to": "P2.1", "colour": "red", "awg": 24, "signal": "+5V"},
+    {"from": "P1.2", "to": "P2.2", "colour": "black", "awg": 24, "signal": "GND"},
+    {"from": "P1.4", "to": "P2.4", "colour": "yellow", "awg": 24, "signal": "DATA"},
+    {"from": "P1.5", "to": "P2.3", "colour": "green", "awg": 24, "signal": "CLOCK"}
+   ],
+   "non_defaults": [
+    {"item": "pinout", "want": "P1 position 3 EMPTY; P1 position 5 goes to P2 position 3", "not": "positions 1-2-3-4 in order"}
+   ],
+   "route": {"cable_type": "wire_bundle", "od_mm": 3.4, "measure_a_mm": null, "measure_b_mm": null, "min_bend_r": null, "allowance_mm": null, "note": ""}
+  },
+  {
+   "id": "CAB-02",
+   "name": "Power lead",
+   "type": "harness",
+   "qty": 5,
+   "label": "CAB-02 POWER",
+   "label_position": "15 mm from P1",
+   "wire_standard": "UL1007",
+   "twisted": true,
+   "length_mm": 41,
+   "tol_mm": 3,
+   "length_def": "wire exit of P1 to the wire tips of P2",
+   "ends": [
+    {"id": "P1", "kind": "housing", "mates": "J2",
+     "part": {"mpn": "EX-H02-254", "supplier_code": "C0000005", "positions": 2, "rows": 1, "keyed": true, "description": "2.54 mm pitch 2-position housing"},
+     "terminal": {"mpn": "EX-T254", "supplier_code": "C0000002", "awg_min": 22, "awg_max": 28}},
+    {"id": "P2", "kind": "tinned", "tin_mm": 4, "trim_at_assembly": true}
+   ],
+   "wires": [
+    {"from": "P1.1", "to": "P2.1", "colour": "red", "awg": 22, "signal": "+12V"},
+    {"from": "P1.2", "to": "P2.2", "colour": "black", "awg": 22, "signal": "GND"}
+   ],
+   "non_defaults": [],
+   "accept_defaults": ["pinout"],
+   "route": {"cable_type": "wire_bundle", "od_mm": 2.7, "measure_a_mm": null, "measure_b_mm": null, "min_bend_r": null, "allowance_mm": null, "note": ""}
+  },
+  {
+   "id": "CAB-03",
+   "name": "RF lead",
+   "type": "rf",
+   "qty": 5,
+   "label": "CAB-03 RF",
+   "label_position": "at the middle of the cable",
+   "colour": "grey",
+   "length_mm": 50,
+   "tol_mm": 3,
+   "length_def": "end of the outer conductor at P1 to end of the outer conductor at P2",
+   "cable_spec": "50 ohm micro-coax, FEP jacket, outer diameter 1.32 mm",
+   "ends": [
+    {"id": "P1", "kind": "jack", "part": {"mpn": "EX-SMA-BH-132", "supplier_code": "C0000006", "short": "SMA bulkhead jack", "description": "SMA bulkhead jack, solder, for 1.32 mm coax"}},
+    {"id": "P2", "kind": "plug", "part": {"mpn": "EX-SMA-P-132", "supplier_code": "C0000007", "short": "SMA straight plug", "description": "SMA straight plug, solder, for 1.32 mm coax"}}
+   ],
+   "wires": [],
+   "non_defaults": [
+    {"item": "cable", "want": "micro-coax, FEP jacket, OD 1.32 mm", "not": "the stock semi-flexible coax"},
+    {"item": "connector", "want": "the connectors of the BOM, by part number", "not": "connectors chosen by the production line"}
+   ],
+   "route": {"cable_type": "coax_132", "measure_a_mm": null, "measure_b_mm": null, "min_bend_r": 6.0, "allowance_mm": null, "note": ""}
+  }
+ ]
+}

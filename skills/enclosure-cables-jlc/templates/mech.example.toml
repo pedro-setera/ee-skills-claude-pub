@@ -1,0 +1,248 @@
+# mech.toml: the one config file of a project, read by every script of the skill.
+# Copy to <project>/mech/mech.toml. Every key is optional; the value shown is the default or a 1-line example.
+# Delete the sections the project does not use. Paths are relative to the mech folder. Units: mm, degrees.
+
+[project]
+name = ""                       # NEUTRAL code, not a product name: drawing_book.py prints it in the header of every
+                                # sheet-metal drawing, and the cable scripts refuse it on cable drawings and forms
+company = ""                    # the only organisation name allowed in STEP headers and title blocks ("" = empty)
+rev = "A"                       # revision letter printed on every drawing
+
+[tools]                         # found by env_check.py when empty; "none" = the user declined that tool (never looked for, never used)
+cadquery_python = ""            # a Python that has CadQuery (or the CADQUERY_PYTHON environment variable)
+blender = ""                    # a path, "" = look for it, "none" = no Blender: renders read "could not run"
+slicer = ""                     # a path, "" = look for it, "none" = no slicer may be used: print_check --slice runs nothing
+slicer_kind = ""                # "bambu" | "orca" | "prusa"
+chrome = ""                     # Chrome or Edge, for the manual's PDF
+
+[printer]
+profile = ""                    # path to PRINTER_PROFILE.toml in the user's home, OUTSIDE the skill
+                                # (for example ~/.claude/enclosure-cables/PRINTER_PROFILE.toml, written out in full)
+
+[paths]
+model = "model/build_model.py"
+interface = "interface.json"    # or the board's own folder, e.g. ../hardware/<board>/mech/interface.json
+out = "out"
+cables = "cables/cables.json"
+vendor = "vendor3d/vendor_parts.toml"
+
+# ---- build.py: one build, nothing stale ------------------------------------------------------------------------
+[build]
+inputs = ["model/**/*.py", "interface.json", "cables/cables.json"]   # an output older than any of these is stale
+
+# Steps that write cables/cables.json (cable_route.py, cable_second_measure.py --compare --apply) go FIRST: an input
+# rewritten during the run makes every earlier output stale (build.py names the step). From phase 5, for example:
+# [[build.steps]]
+# name = "route"
+# cmd = ["{cq_python}", "-I", "{scripts}/cable_route.py", "--project", "{project}"]
+# outputs = ["out/cables/route_*.png", "out/checks/cable_route.json"]
+
+[[build.steps]]                 # placeholders: {python} {cq_python} {scripts} {project}
+name = "fit"
+cmd = ["{cq_python}", "-I", "{scripts}/fit_check.py", "--project", "{project}"]
+outputs = ["out/checks/fit_check.json"]
+timeout = 3600
+# ok_codes = [0]                # exit codes that count as done
+
+[[build.steps]]
+name = "views"
+cmd = ["{cq_python}", "-I", "{scripts}/views.py", "--project", "{project}"]
+outputs = ["out/views/*.png"]
+
+# ---- fit_check.py ----------------------------------------------------------------------------------------------
+[fit]
+board = "board"                 # key of the board in the model's PLACEMENTS (default: the first)
+interface = "interface.json"
+stand_prefix = "stand_"         # stands are found by name: stand_<hole name>
+hole_tol = 0.1
+screw_head_d = 5.5
+screw_head_h = 3.0
+driver_d = 6.0                  # screwdriver column over every hole
+# column_top = 40.0             # top of the tool column; default: the top of the box solids
+wall = 1.5                      # wall thickness for the connector gap rows
+skip = []                       # box solids not tested, e.g. ["gasket*", "label*"]
+
+[fit.zones]                     # height limits above the board
+general = { max = 12.0 }
+# tall = { max = 10.0, rect = [0.0, 0.0, 20.0, 15.0] }      # rect in the interface frame
+
+[fit.connectors.J2]             # one table per connector that passes a wall
+wall = "front"                  # front | back | left | right (face rows; top and bottom: "could not run"; the plug works on all six)
+flush = 0.1                     # mating face within +- this of face_offset
+face_offset = 0.0               # mating face this far INSIDE the wall's outside face
+gap_min = 0.0                   # body to the wall's inside face
+gap_max = 0.2
+plug = [12.5, 6.5, 12.0]        # the MATED PLUG: width, height, length (mm) from the maker's drawing; centred on the mating face, reaching outward
+# plug_offset = [0, 0, 0]       # optional shift of the plug in the face (u, v) and along the mating direction (outward positive)
+# cable = true                  # carries a cable or a plug: without plug = [...] the row is "could not run: mated plug not modelled"
+
+# ---- parcheck.py -----------------------------------------------------------------------------------------------
+[parcheck]
+min_gap = 0.0
+skip = []
+allow = [ { a = "stand_*", b = "board", bound = 0.5 } ]      # intended contacts; bound in mm3
+
+# ---- vendor_parts.py -------------------------------------------------------------------------------------------
+[vendor]
+bought = []                     # ids of the bought parts (or `bought` in vendor_parts.toml)
+fasteners = "vendor3d/fasteners"    # library folder: <id>.step and <id>_simple.step per fastener
+# cache = "out/cache/vendor"
+
+# ---- print_check.py --------------------------------------------------------------------------------------------
+[print]
+parts = []                      # e.g. ["out/print/shell.stl", "out/print/lid.stl"]; default out/print/*.stl
+allow_support = false           # true when the user said supports are fine
+step_verdict = "fail"           # "na" softens the thin-on-thick row (only after looking at the slicer preview)
+
+# ---- views.py --------------------------------------------------------------------------------------------------
+[views]
+long_px = 1500
+margin_px = 120
+fov_deg = 28
+azimuth_deg = 35
+elevation_deg = 28
+explode_gap = 0                 # 0 = a quarter of the model height, at least 10
+dims = true
+titles = true
+hide = []                       # solids left out of every view
+skip = []                       # views not made, e.g. ["bottom"]
+
+[views.colours]                 # "#rrggbb" or a chart name from a capability sheet ([coat_rgb] / [ink_rgb])
+# lid = "#b4b8bc"
+
+[views.explode]
+# lid = [0.0, 0.0, 40.0]
+
+[[views.section]]
+name = "mid"
+axis = "y"
+at = 40.0
+keep = "positive"
+
+# ---- render_blender.py -----------------------------------------------------------------------------------------
+[render]
+samples = 64
+resolution = [1600, 1200]
+background = "#dfe3e8"
+floor = true
+device = "auto"                 # auto | cpu | gpu
+threads = 0                     # 0 = all cores
+
+[render.finish.default]
+colour = "#b4b8bc"
+roughness = 0.5
+metallic = 0.0
+
+# [render.finish.lid]
+# colour = "<powder chart name>"     # resolved through the capability sheet's [coat_rgb]
+
+[[render.shot]]
+name = "iso"
+preset = "front-left"           # or azimuth = 35, elevation = 25
+
+# ---- sheet_features.py, drawing_book.py, drawing_vs_step.py, sheet_dfm.py --------------------------------------
+[sheet]
+thickness = 1.2
+supplier = "jlccnc-sheet-metal" # id of suppliers/<id>.capability.toml
+material = ""                   # printed on the drawings as written; use the supplier's own material name
+k_factor = 0.44                 # flat pattern (reference only)
+pattern_min = 6                 # equal holes from this count are drawn as a pattern table
+bottom_view = "above"
+allowed_bend_angles = [90]
+hole_to_bend_from = "tangent"   # default, strict: to the bend's tangent line; "outer_face" = to the other leg's outer face (lenient, a recorded decision)
+parts = [
+  { name = "base", step = "out/step/base.step", silk_dxf = "out/silk/base_silk.dxf", finish = "", qty = 1, title = "" },
+  { name = "cover", step = "out/step/cover.step", finish = "", qty = 1 },
+]
+# panel_names = { BOTTOM = "FLOOR" }
+
+[sheet.margins]                 # added to the supplier's values; see references/design-rules/sheet-metal.md
+flange = 0.0
+flange_second = 0.0
+hole_to_bend = 0.5              # a margin that has passed supplier review (SM-04)
+hardware_edge = 0.3             # SM-11: 4.8 + 0.3 = 5.1, a margin that has passed supplier review
+hardware_bend = 0.5             # SM-11: 7 + 0.5 = 7.5, a margin that has passed supplier review
+u_inside = 0.0
+hole_to_hole = 0.0
+silk = 0.0
+
+[[sheet.hardware]]              # EXAMPLE catalogue values (as the seed capability sheet): read the supplier's hardware page and replace them
+code = "M3 clinch nut"
+thread = "M3"
+hole_d = 4.25
+body_d = 6.3
+edge_min = 4.8                  # catalogue minimum, centre to a free edge (the margin is in [sheet.margins])
+bend_min = 7.0                  # the supplier's page, centre to a bend (the margin is in [sheet.margins])
+
+[drawing]
+page = "A3"                     # A3 or A4, landscape
+check_tol = 0.05
+tolerances = [ ["Linear, after bending", "+-0.2"] ]     # printed unchanged; write only what the capability sheet states
+notes = []                      # printed numbered and unchanged; no finish or request words here
+
+# ---- silk_dxf.py, ink_sheet.py ---------------------------------------------------------------------------------
+[silk]
+coat = ""                       # the coat's chart name, for the ink sheet
+outline_layer = "OUTLINE_NOT_PRINTED"
+bend_layer = "BEND_LINE_NOT_PRINTED"    # reference layer of the bend lines (written DASHED)
+outline_colour = 3              # AutoCAD colour index of the outline layer: green. NEVER 7 or 0, never an ink's colour (silk_dxf refuses)
+bend_colour = 2                 # the bend-line layer: yellow
+non_print_suffix = "_NOT_PRINTED"
+allow_ink_overlap = false
+notes = []                      # printed unchanged on the ink sheet
+no_print = []                   # e.g. [ { face = "REAR", name = "label area", rect = [10.0, 5.0, 40.0, 20.0] } ] (sheet only)
+# text_gap = 0.4                # default: min_gap + margin + 0.05
+# min_contrast = 3.0            # an ink under this contrast on the coat colour fails
+
+# ---- catalogue_scan.py, privacy_scan.py, step_scrub.py ---------------------------------------------------------
+[catalogue]
+sheet = "suppliers/jlccnc-sheet-metal.capability.toml"
+scan = ["out/upload"]
+waivers = "catalogue_waivers.toml"
+# deny_file = "deny.txt"
+
+[privacy]
+scan = ["out/upload"]
+deny_file = "deny.txt"          # one word per line (or re:PATTERN): the project's own names go here
+allow = []
+exclude = []
+
+[scrub]
+allow = []                      # texts that may stay in a STEP header
+
+# ---- supplier_calendar.py --------------------------------------------------------------------------------------
+[supplier_hours]                # as read 2026-11 for one supplier group; re-read the live page
+utc_offset = 8
+windows = [["09:30", "12:00"], ["13:30", "18:30"]]
+weekdays = [0, 1, 2, 3, 4]      # Monday = 0
+holidays = []                   # "YYYY-MM-DD"
+answer_margin_min = 60
+pay_margin_min = 120
+submit_days = [0, 1, 2]         # Monday to Wednesday
+
+# ---- cable scripts ---------------------------------------------------------------------------------------------
+[cables]
+file = "cables/cables.json"
+routes = "cables/routes.toml"
+second = "cables/second_measure.toml"
+supplier = "lcsc-cable"         # sheet: suppliers/<supplier>.capability.toml (or sheet = "path")
+min_straight_mm = 3.0           # straight exit at every connector
+arrive_tol_mm = 0.5
+arrive_tol_deg = 2.0
+clearance_mm = 1.0
+cable_gap_mm = 0.0
+compare_max_diff_mm = 2.0       # first against second measure
+allowance_crimped_mm = 2.0      # PROVISIONAL
+allowance_trimmed_mm = 10.0     # PROVISIONAL
+tol_mm = 3.0                    # used when the capability sheet has no [tolerance] standard_mm
+label_max_chars = 24
+show_signals = false            # signal names on the drawings
+deny = []                       # words that must not appear on a drawing or a form
+skip_solids = []
+po_number = ""
+
+[cables.types.thin_coax]        # a cable type; "cable_types" in cables.json wins
+od_mm = 1.32
+min_bend_r = 6.0
+stiff = true
+# min_bend_x_od = 4.0

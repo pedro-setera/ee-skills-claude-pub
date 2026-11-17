@@ -1,0 +1,24 @@
+# Example poses for the independent second measure (cable_second_measure.py), for cables.example.json.
+# Written by a second person from the model alone: the two wire exits of each cable (p) with the direction in which the
+# wire LEAVES each connector (d), the bend radius, optional via points. Never copy numbers from routes.toml into this file.
+
+[[cable]]
+id = "CAB-01"
+radius = 6.0
+start = {p = [46.3, 32.5, 13.6], d = [0, 0, 1]}
+end   = {p = [90.0, 32.5, 13.6], d = [0, 0, 1]}
+lead  = [6.0, 6.0]
+
+[[cable]]
+id = "CAB-02"
+radius = 6.0
+start = {p = [16.5, 52.5, 13.6], d = [0, 0, 1]}
+end   = {p = [30.0, 68.0, 25.0], d = [0, -1, 0]}
+lead  = [5.0, 4.0]
+
+[[cable]]
+id = "CAB-03"
+radius = 12.0
+start = {p = [100.0, 12.0, 33.0], d = [0, 1, 0]}
+end   = {p = [70.0, 42.0, 33.0], d = [0, -1, 0]}
+lead  = [2.0, 2.0]

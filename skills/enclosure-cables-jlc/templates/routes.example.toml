@@ -1,0 +1,38 @@
+# Example routes for cables.example.json (a made-up 120 x 80 x 40 mm box; frame: origin at the outer front-left-bottom
+# corner, x right, y back, z up, mm). Copy to <project>/mech/cables/routes.toml and replace every pose with points read
+# from YOUR model. A pose = the wire exit of a connector (p) and the direction in which the wire LEAVES it (d).
+# The second measure has its own file (second_measure.toml), written by someone who has not seen this one.
+
+[[cable]]
+id = "CAB-01"                                   # header on the left board, up and over to the header on the right board
+start = {p = [46.25, 32.5, 13.6], d = [0, 0, 1]}
+end   = {p = [90.0, 32.5, 13.6], d = [0, 0, 1]}
+moves = [
+  {line = 6.0},
+  {arc = 90, r = 6.0, toward = [1, 0, 0]},
+  {line = 31.75},
+  {arc = 90, r = 6.0, toward = [0, 0, -1]},
+  {line = 6.0},
+]
+allow = ["hdr_a", "hdr_b"]                      # the cable's own connectors in the model
+
+[[cable]]
+id = "CAB-02"                                   # 2-position header up, then back to the solder tabs of the rear jack
+start = {p = [16.5, 52.5, 13.6], d = [0, 0, 1]}
+end   = {p = [30.0, 68.0, 25.0], d = [0, -1, 0]}
+moves = [
+  {line = 5.0},
+  {to_end = true, r = 6.0, lead = 4.0},         # arc - straight - arc to the end pose, 4 mm straight into the tabs
+]
+allow = ["hdr_p", "jack_rear"]
+
+[[cable]]
+id = "CAB-03"                                   # coax: an S from the front panel jack to the plug on the module
+start = {p = [100.0, 12.0, 33.0], d = [0, 1, 0]}
+end   = {p = [70.0, 42.0, 33.0], d = [0, -1, 0]}
+moves = [
+  {line = 2.0},
+  {to_end = true, r = 12.0, lead = 2.0},
+]
+min_straight = [2.0, 2.0]                       # soldered coax ends: 2 mm straight is enough here
+allow = ["sma_panel", "plug_module"]

@@ -1,0 +1,186 @@
+# Capability sheet of a sheet-metal supplier: JLCCNC sheet metal (seed).
+# EVERY value below is "as read 2026-11": re-read the live quote tool, help pages and charts before every order,
+# correct this copy in <project>/mech/suppliers/, and set read_date. Later phases may use ONLY what is on this sheet.
+# A value marked "not read" was not in the notes this seed was written from: read it on the live page.
+# Read by: sheet_dfm.py, silk_dxf.py, ink_sheet.py, catalogue_scan.py, views.py, render_blender.py.
+
+[meta]
+supplier = "JLCCNC sheet metal"
+read_date = "2026-11"                       # as read 2026-11, re-read the live page
+status = "seed"                             # "seed" = copied from the skill, NOT re-read; set "read live <YYYY-MM-DD>" after the live read
+sources = ["the supplier's sheet-metal quote tool, as read 2026-11, re-read the live page",
+           "the supplier's help pages: sheet-metal fabrication guidelines, file requirements, materials, as read 2026-11, re-read",
+           "the powder-coat colour chart and the silkscreen ink chart (pictures), as read 2026-11, re-read",
+           "the supplier's written answers, as seen 2026-11"]
+note = "as read 2026-11, re-read the live page"
+
+[hours]                                     # as read 2026-11, re-read the live page; same keys as [supplier_hours] in mech.toml
+utc_offset = 8
+windows = [["09:30", "12:00"], ["13:30", "18:30"]]     # the hours in which answers were seen; the quote page itself says Mon-Sat 9am-6pm
+weekdays = [0, 1, 2, 3, 4]                  # Monday = 0
+pay_before = "18:00"                        # as read 2026-11: a payment after their evening starts production a working day later; re-read
+
+# ---- what the forms and charts offer (catalogue_scan.py: any colour, finish or material word NOT here is flagged) ----
+[finishes]
+# as read 2026-11 from the supplier's powder chart, re-read the live chart
+powder = ["Black Glossy", "Black Matte", "Gray Glossy", "Gray Matte", "Blue Glossy", "Blue Matte",
+          "Green Glossy", "Green Matte", "Yellow Glossy", "Red Glossy", "White Glossy", "White Matte"]
+# as read 2026-11 in the quote tool for aluminium sheet (each Matte or Glossy), re-read the live page
+anodize = ["Natural", "Black", "Silver", "Dark Gray", "Red", "Pink", "Sky Blue", "Dark Green", "Champagne"]
+gloss = ["Matte", "Glossy"]                 # as read 2026-11, re-read the live page
+# as read 2026-11 from the supplier's silkscreen ink chart, re-read the live chart
+inks = ["Black", "White", "Gray", "Brown", "Yellow", "Orange", "Red", "Dark Blue",
+        "Light Green", "Dark Green", "Light Blue", "Sky Blue"]
+# as read 2026-11 in the quote tool, re-read the live page. Conductive anodizing: colour range not read.
+other = ["Powder Coating", "Anodizing", "Conductive Anodizing", "Hardcoat Anodizing", "Silkscreen", "Laser Marking", "No finish"]
+silkscreen_modes = ["Monochrome", "Dichromatic", "Customized"]     # as read 2026-11 (one, two, three or more inks), re-read
+
+[materials]
+sheet = ["5052"]                            # aluminium; as read 2026-11, re-read the live page
+other_sheet = ["SS201", "SS304", "cold-rolled steel", "galvanized steel"]      # as read 2026-11, re-read; their rules were not read
+thickness = [0.5, 0.8, 1.0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0]            # as read 2026-11, re-read the live page
+
+[limits]
+max_length = 800                            # mm; as read 2026-11, re-read the live page
+hole_d_min = 1.0                            # mm; as read 2026-11, re-read the live page
+hole_d_min_t_factor = 0.5                   # hole >= 0.5 x thickness; as read 2026-11, re-read the live page
+hole_to_hole = 1.0                          # mm web between holes ("under 1 mm: high risk"); as read 2026-11, re-read
+u_inside_min = 12.0                         # mm inside a U, read for thickness 1 to 2; as read 2026-11, re-read
+tiny_face = 0.01                            # mm2; NOT a supplier figure: one project's reviewer value for faces that break file readers
+tiny_edge = 0.1                             # mm; NOT a supplier figure: the same reviewer's value
+standard_tolerance = 0.1                    # mm; the tightest of the published tolerances below; as read 2026-11, re-read
+files_per_upload = 10                       # as seen 2026-11 (the help page read 20): re-read the live page
+file_max_mb = 100                           # as read 2026-11, re-read the live page
+
+[tolerances]                                # information for drawings; as read 2026-11, re-read the live page
+general = 0.2
+cutting = 0.1
+bending = 0.3
+bend_angle_deg = 1.0
+holes_threads = 0.1
+
+# ---- the bend table, one section per thickness that the table lists (sheet_dfm.py exits 2 for a thickness with no
+#      section: for 0.5, 0.8, 4.0, 5.0 and 6.0 read the live page and add the section) ----
+[sheet_rules."1.0"]                         # as read 2026-11, re-read the live page
+outer_bend_r = 1.8
+min_flange = 3.8
+min_flange_second = 5.5
+hole_to_bend_round = 3.3
+hole_to_bend_square = 3.8
+
+[sheet_rules."1.2"]                         # as read 2026-11, re-read the live page
+outer_bend_r = 2.0
+min_flange = 5.0
+min_flange_second = 6.5
+hole_to_bend_round = 3.6
+hole_to_bend_square = 5.0
+
+[sheet_rules."1.5"]                         # as read 2026-11, re-read the live page
+outer_bend_r = 2.75
+min_flange = 6.0
+min_flange_second = 8.5
+hole_to_bend_round = 4.5
+hole_to_bend_square = 6.0
+
+[sheet_rules."2.0"]                         # as read 2026-11, re-read the live page
+outer_bend_r = 3.7
+min_flange = 8.0
+min_flange_second = 10.0
+hole_to_bend_round = 6.0
+hole_to_bend_square = 8.0
+
+[sheet_rules."2.5"]                         # as read 2026-11, re-read the live page
+outer_bend_r = 5.0
+min_flange = 10.0
+min_flange_second = 12.0
+hole_to_bend_round = 7.5
+hole_to_bend_square = 10.0
+
+[sheet_rules."3.0"]                         # as read 2026-11, re-read the live page
+outer_bend_r = 6.0
+min_flange = 13.0
+min_flange_second = 19.0
+hole_to_bend_round = 9.0
+hole_to_bend_square = 13.0
+
+[silk_rules]                                # as read 2026-11, re-read the live page
+min_text_height = 2.0                       # mm
+min_line = 0.2                              # mm
+min_gap = 0.3                               # mm between characters
+edge_clearance = 1.0                        # mm from print to a bend or an outer edge (one project also kept it to cut-outs)
+
+# ---- colours for layer colour, ink sheet, views and renders. APPROXIMATE, from the supplier's chart picture: a photo
+#      of a printed chart, not a measurement. Judge the real colour on the first samples. ----
+[ink_rgb]
+Black = "#000000"                           # approximate, from the supplier's chart picture; as read 2026-11, re-read
+White = "#FFFFFF"                           # approximate, from the supplier's chart picture; as read 2026-11, re-read
+# not read: take each from the live chart picture before using the ink (silk_dxf.py refuses an ink with no colour here)
+# Gray = "#......"
+# Brown = "#......"
+# Yellow = "#......"
+# Orange = "#......"
+# Red = "#......"
+# "Dark Blue" = "#......"
+# "Light Green" = "#......"
+# "Dark Green" = "#......"
+# "Light Blue" = "#......"
+# "Sky Blue" = "#......"
+
+[coat_rgb]
+# not read: take each from the live chart picture before using the coat (ink_sheet.py could not run without it)
+# "Black Matte" = "#......"
+# "Gray Matte" = "#......"
+# "White Matte" = "#......"
+
+# ---- hardware the supplier presses (information; the values the checks use go into mech.toml [[sheet.hardware]]) ----
+[[hardware]]                                # as seen 2026-11; VERIFY ON THE SUPPLIER'S PAGE
+code = "CLS-M3-2"
+thread = "M3"
+hole_d = 4.25
+body_d = 6.3
+body_h = 1.5
+min_sheet = 1.4
+edge_min = 4.8                              # centre to a free edge, catalogue minimum (5.1 is a margin that has passed supplier review); verify
+bend_min = 7.0                              # centre to a bend, as read 2026-11 on the supplier's page (from where: not stated); verify
+
+[[hardware]]                                # as seen 2026-11; VERIFY ON THE SUPPLIER'S PAGE
+code = "CLS-M4-2"
+thread = "M4"
+hole_d = 5.40
+body_d = 7.9
+body_h = 2.0
+min_sheet = 1.4
+edge_min = 6.9
+bend_min = 7.0
+
+[process]                                   # as seen 2026-11, re-read
+partial_coating = false                     # as seen 2026-11: no partial coating, no masked zones; the factory coats all over
+colour_systems = false                      # as seen 2026-11: no RAL, no Pantone; chart names only
+review_before_payment = true                # submit first; pay after every part is reviewed
+review_per_part = true                      # each part has its own reviewer; the order waits for the slowest
+review_completed_mail = false               # no such mail: watch the order page
+ink_check_in_file_review = false            # the print file's inks are looked at only at the print step, after payment
+thickness_field = false                     # the tool reads the thickness from the STEP
+step_schema = "AP203"                       # the supplier's recommended schema, as read 2026-11, re-read
+typical_days = {review_plain_part = "0.5", review_per_question = 1, raw_parts = 4, powder = 6, powder_and_silkscreen = 7, to_shipping_centre = 1}
+
+# ---- the quote form, fields in form order (as read 2026-11, re-read the live page) ----
+[forms]
+free_text = ["Remark"]                      # the only free-text field; every word in it that is not a field value or a chart name gets a question
+
+[forms.sheet_metal]
+name = "Sheet metal quote"
+note = "one ZIP per part (STEP + PDF + print DXF) in the upload field; no thickness field"
+fields = [
+  {key = "upload",          label = "Upload (3D file or ZIP)"},
+  {key = "material",        label = "Material / Type"},
+  {key = "finish_1",        label = "Surface Finish (first finish: type, colour, Matte or Glossy)"},
+  {key = "finish_2",        label = "+ Add finish (Silkscreen: mode, with its own file field; or Laser Marking)"},
+  {key = "silk_file",       label = "Silkscreen file (one per part)"},
+  {key = "threads",         label = "Threads and Tapped Holes (Yes opens '+ Add file' for the PDF; No has no file field)"},
+  {key = "thread_file",     label = "Thread or Riveting File"},
+  {key = "quantity",        label = "Quantity"},
+  {key = "product_desc",    label = "Product Desc (a category: bent parts 'Sheet Metal Bending/Welding Category', flat parts 'Sheet Metal Flat Category')"},
+  {key = "build_time",      label = "Build time"},
+  {key = "remark",          label = "Remark"},
+]

@@ -1,0 +1,57 @@
+/* Assembly manual stylesheet: A4, pictures first. Used by manual_build.py (inlined into assembly-manual.html).
+   Copy to <project>/manual/manual.css to change it; the script prefers that copy. */
+@page {
+  size: A4;
+  margin: 14mm 12mm 16mm 12mm;
+  @bottom-center { content: counter(page) " / " counter(pages); font: 8pt "Segoe UI", Arial, sans-serif; color: #5b6475; }
+}
+:root { --ink: #1d2330; --muted: #5b6475; --line: #cdd2dc; --accent: #e8590c; --blue: #1967d2; --red: #c92a2a; --soft: #f3f5f8; }
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font: 10.5pt/1.4 "Segoe UI", Arial, Helvetica, sans-serif; color: var(--ink); background: #fff; }
+h1, h2, h3 { margin: 0; line-height: 1.15; }
+.cover { min-height: 255mm; display: flex; flex-direction: column; justify-content: space-between; page-break-after: always; break-after: page; }
+.cover .top { padding-top: 20mm; }
+.cover h1 { font-size: 30pt; letter-spacing: -0.5pt; }
+.cover .sub { font-size: 15pt; color: var(--muted); margin-top: 4mm; }
+.cover .hero { text-align: center; margin: 10mm 0; }
+.cover .hero img { max-width: 100%; max-height: 120mm; object-fit: contain; }
+.cover .meta { border-top: 2px solid var(--ink); padding-top: 4mm; color: var(--muted); font-size: 9.5pt; display: flex; justify-content: space-between; }
+.page { page-break-after: always; break-after: page; }
+.page:last-child { page-break-after: auto; }
+h2.sec { font-size: 17pt; border-bottom: 2px solid var(--ink); padding-bottom: 2mm; margin-bottom: 5mm; }
+ol.toc { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 10mm; }
+ol.toc li { padding: 1.6mm 0; border-bottom: 1px dotted var(--line); break-inside: avoid; }
+ol.toc .n { display: inline-block; width: 8mm; font-weight: 700; color: var(--accent); }
+table { border-collapse: collapse; width: 100%; margin: 0 0 7mm; font-size: 9.5pt; }
+th, td { border-bottom: 1px solid var(--line); padding: 1.6mm 2mm; text-align: left; vertical-align: middle; }
+th { background: var(--soft); font-size: 8.5pt; text-transform: uppercase; letter-spacing: .4pt; color: var(--muted); }
+td.num, th.num { text-align: right; white-space: nowrap; }
+.ic { width: 5.5mm; height: 5.5mm; vertical-align: middle; margin-right: 1.2mm; }
+.step { break-inside: avoid; page-break-inside: avoid; margin: 0 0 6mm; border: 1px solid var(--line); border-radius: 3mm; overflow: hidden; }
+.step header { display: flex; align-items: center; gap: 3mm; background: var(--soft); padding: 2.2mm 4mm; border-bottom: 1px solid var(--line); }
+.step .no { background: var(--ink); color: #fff; font-weight: 700; border-radius: 50%; width: 8mm; height: 8mm; display: inline-flex; align-items: center; justify-content: center; font-size: 11pt; flex: none; }
+.step h3 { font-size: 13pt; }
+.step .pic { text-align: center; padding: 2mm; background: #fff; }
+.step .pic img { max-width: 100%; max-height: 68mm; object-fit: contain; }
+body.pp1 .step { page-break-after: always; break-after: page; margin-bottom: 0; }
+body.pp1 .step .pic img { max-height: 150mm; }
+body.pp1 .step:last-child { page-break-after: auto; }
+.step .body { padding: 2mm 4mm 3mm; }
+.step .text p { margin: 0 0 1mm; }
+.chips { display: flex; flex-wrap: wrap; gap: 2mm; margin-top: 2mm; align-items: center; }
+.chip { border: 1px solid var(--line); border-radius: 2mm; padding: 0.8mm 2.4mm; font-size: 9pt; background: #fff; }
+.chip b { color: var(--accent); }
+.chip.tool { background: var(--soft); }
+.chip.tl { border-color: var(--blue); color: var(--blue); }
+.fast { display: inline-flex; align-items: center; gap: 2mm; }
+.fast svg { display: block; }
+.warn { margin-top: 2.5mm; border: 2px solid var(--red); border-radius: 2mm; padding: 1.5mm 3mm; color: var(--red); font-weight: 600; display: flex; gap: 2.5mm; align-items: center; }
+.warn .bang { background: var(--red); color: #fff; border-radius: 50%; width: 5.5mm; height: 5.5mm; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; flex: none; }
+.open { margin-top: 2mm; border: 1.5px dashed #b58900; background: #fff8e1; border-radius: 2mm; padding: 1mm 3mm; font-size: 9pt; }
+.open b { color: #8a6500; }
+.missing { padding: 18mm 4mm; text-align: center; color: var(--red); font-weight: 700; border: 2px dashed var(--red); margin: 2mm; }
+ol.openlist { padding-left: 7mm; }
+ol.openlist li { margin-bottom: 2mm; }
+.note { color: var(--muted); font-size: 9pt; }
+@media screen { body { max-width: 210mm; margin: 0 auto; padding: 8mm; } .page, .cover { border-bottom: 1px dashed var(--line); margin-bottom: 8mm; } }

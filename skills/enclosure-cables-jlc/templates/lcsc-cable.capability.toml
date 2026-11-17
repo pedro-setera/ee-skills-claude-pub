@@ -1,0 +1,126 @@
+# Capability sheet of a custom-cable supplier: LCSC Cable (seed).
+# EVERY value below is "as read 2026-11": re-read the live quote form and the supplier's pages before every order,
+# correct this copy in <project>/mech/suppliers/, and set read_date. A value that was not read is marked "assumed".
+
+[meta]
+supplier = "LCSC Cable"
+read_date = "2026-11"
+status = "seed"              # "seed" = copied from the skill, NOT re-read; set "read live <YYYY-MM-DD>" after the live read
+sources = ["the supplier's quote form (Customize, then service, then segment), as read 2026-11, re-read the live page",
+           "the supplier's production drawings and order page, as read 2026-11, re-read"]
+note = "as read 2026-11, re-read the live page"
+
+[hours]                      # as read 2026-11, re-read the live page; the same keys as [supplier_hours] in mech.toml
+utc_offset = 8
+windows = [["09:30", "12:00"], ["13:30", "18:30"]]
+weekdays = [0, 1, 2, 3, 4]   # Monday = 0
+
+[tolerance]                  # as read 2026-11 (from production drawings), re-read
+standard_mm = [3, 5]         # the supplier draws +-3 or +-5 mm
+design_mm = 5                # the tolerance the checks design for (REACH and SBEND judge the cable at length -+ this value).
+                             # PROVISIONAL: a value asked at +-3 can come back +-5; set 3 only after a production drawing shows +-3 held
+silent = true                # a tighter value asked in a drawing or a remark is NOT questioned: the standard is drawn
+note = "ask the narrowest standard on the drawing (+-3 mm), but design every cable to work at design_mm (+-5 mm): the supplier may draw any of its standard tolerances whatever was asked (asked tighter, drawn at +-5)"
+
+[limits]                     # as read 2026-11, re-read the live page
+files_max = 5                # files per quote item
+file_max_mb = 15
+file_types = ["pdf", "png", "jpg", "jpeg"]
+more_requirements_chars = 500    # ASSUMED (not read): the form's own limit was not recorded; set equal to the revise note
+revise_chars = 500           # the Revise note of a production drawing
+revise_pictures = 1          # one picture (png, jpg or pdf) per Revise note
+
+[process]                    # as read 2026-11, re-read
+quote_editable = false       # a submitted quote cannot be edited: freeze the cable list first
+line_numbers = "the supplier numbers the lines of a quote itself; the entry order does not fix them: record the map when the quote is ready"
+statuses = ["Waiting for Confirmation", "Quote Completed", "Drawing in Progress", "Drawing need Approval", "Confirm or Revise per line", "production"]
+drawing_actions = ["Confirm", "Revise"]
+confirm_starts_assembly = true
+pin1_mark = "a pen dot at cavity 1 of the housing"
+two_row_numbering = "a two-row housing is numbered 1..n down one row and n+1..2n down the other, unless told otherwise in words and with a picture"
+typical_days = {quote = "1-3 business days, +1 per question", drawings_after_payment = 3, revise_round = 1, production = 10}
+
+# What the supplier uses when a field or a note does not say otherwise (seen on production drawings, 2026-11, re-read).
+# cable_check.py wants each of these either in a cable's "non_defaults" (item, want, not) or in its "accept_defaults".
+[[stock_defaults]]
+item = "tolerance"
+default = "+-5 mm drawn when a tighter value than standard is asked"
+applies = ["harness", "rf", "ethernet", "other"]
+
+[[stock_defaults]]
+item = "pinout"
+default = "wires in positions 1-2-3-4 in order at both ends, no empty cavity"
+applies = ["harness"]
+
+[[stock_defaults]]
+item = "cable"
+default = "blue jacketed semi-flexible coax, outer diameter 2.6 mm"
+applies = ["rf"]
+
+[[stock_defaults]]
+item = "connector"
+default = "generic connectors bought by the production line"
+applies = ["rf"]
+
+[[stock_defaults]]
+item = "cable"
+default = "standard round Cat6 patch cable, 24 AWG"
+applies = ["ethernet"]
+
+[[stock_defaults]]
+item = "plug"
+default = "straight moulded plugs"
+applies = ["ethernet"]
+
+# The quote form, segment by segment, fields in form order (as read 2026-11, re-read the live page).
+# key = what cable_fieldsheet.py fills in; label = the words on the form; fixed = a constant choice.
+[forms.harness]
+name = "Terminal Harness"
+fields = [
+  {key = "item_name",         label = "Item name"},
+  {key = "side_a_housing",    label = "Side A housing (supplier code) or Tinned"},
+  {key = "side_a_terminal",   label = "Side A terminal (supplier code)"},
+  {key = "side_a_tin",        label = "Side A tin length"},
+  {key = "side_b_housing",    label = "Side B housing (supplier code) or Tinned"},
+  {key = "side_b_terminal",   label = "Side B terminal (supplier code)"},
+  {key = "side_b_tin",        label = "Side B tin length"},
+  {key = "wire_standard",     label = "Wire standard (UL type)"},
+  {key = "awg",               label = "AWG"},
+  {key = "length",            label = "Wire length (mm)"},
+  {key = "colour",            label = "Colour"},
+  {key = "twisted",           label = "Twisted"},
+  {key = "pinout",            label = "Pinout", fixed = "Other (per drawing)"},
+  {key = "files",             label = "Drawings"},
+  {key = "more_requirements", label = "More Requirements"},
+  {key = "quantity",          label = "Quantity"},
+  {key = "po_number",         label = "PO number"},
+]
+
+[forms.rf]
+name = "RF Cable"
+note = "no fields for the cable or the connectors: the quote line reads generic; only the production drawing shows what will be made"
+fields = [
+  {key = "item_name",         label = "Item name"},
+  {key = "files",             label = "Drawings"},
+  {key = "more_requirements", label = "More Requirements"},
+  {key = "quantity",          label = "Quantity"},
+]
+
+[forms.ethernet]
+name = "Ethernet Cable"
+note = "no fields for the cable or the plugs; angled plugs are moulded by the supplier: upload the orientation picture with the quote"
+fields = [
+  {key = "item_name",         label = "Item name"},
+  {key = "files",             label = "Drawings"},
+  {key = "more_requirements", label = "More Requirements"},
+  {key = "quantity",          label = "Quantity"},
+]
+
+[forms.other]
+name = "Others"
+fields = [
+  {key = "item_name",         label = "Item name"},
+  {key = "files",             label = "Drawings"},
+  {key = "more_requirements", label = "More Requirements"},
+  {key = "quantity",          label = "Quantity"},
+]

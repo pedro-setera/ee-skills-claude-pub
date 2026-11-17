@@ -1,0 +1,206 @@
+(version 1)
+
+# Custom design rules for a board made and assembled at JLCPCB: a TEMPLATE.
+#
+# How to use it
+#   1. Copy this file into the KiCad project folder as <board name>.kicad_dru (the same base name as the
+#      .kicad_pcb), BEFORE the first zone fill and the first routing.
+#   2. Set every value under a line marked SET from JLCPCB's live capability page for THIS layer count and
+#      copper weight, on the day, and write the date here:
+#          values read on: <date>, page: <name>
+#      The numbers below are common values with margin above the minimum; they are a starting point, not
+#      a quote of the supplier.
+#   3. Replace the EXAMPLE rules at the end by the board's own net classes, one rule per class.
+#   4. Run `python -I scripts/drc_run.py`. It proves that this file was loaded. KiCad ignores the WHOLE file
+#      without a word when one rule has a syntax error, and then reports a clean board.
+#   5. Prove each rule once on a copy that contains the defect (a too thin track, a via on a pad). A rule whose
+#      condition is mistyped never fires, and no tool reports that.
+#
+# Syntax traps of this file format
+#   - A comment must stand on a line of its own. A "#" after a rule on the same line is a syntax error, and
+#     one syntax error switches off every rule of the file, silently.
+#   - Lengths carry their unit without a blank: 0.15mm.
+#   - A (layer ...) line narrows a rule to items ON that layer. A rule between a silkscreen text and a pad, or
+#     between a via and a pad, must not have one, or it never fires.
+#   - A minimum connection width finds NECKS between wider copper. Copper that is narrow everywhere is not a
+#     neck: check track widths with track_width.
+#
+# Why custom rules and not only "Board Setup": the board-setup minimums are one number for the whole board.
+# These rules add what board setup cannot say: per net class, per layer, text against pads, a via hole against
+# a pad of any net. Every rule is an ERROR: warnings are read once and then ignored.
+#
+# Also set in Board Setup > Design Rules > Violation Severity (stored in the .kicad_pro; a rule file cannot
+# set them): Error for courtyards overlap, footprint has no courtyard, hole inside a courtyard, thermal relief
+# incomplete, copper sliver, silkscreen clipped by solder mask, silkscreen overlap, text height and thickness.
+# drc_run.py lists every check that the project has set to "ignore".
+
+# ---------------------------------------------------------------------------------------------------------
+# 1. Copper: track width and spacing
+# Why: the fabricator's minimum is a limit of its process, not a target. Margin costs nothing on a sample
+# board and removes a class of engineering questions.
+
+# SET: minimum track width for this layer count, plus margin
+(rule "JLCPCB: minimum track width"
+  (severity error)
+  (constraint track_width (min 0.15mm)))
+
+# SET: minimum copper spacing for this layer count, plus margin
+(rule "JLCPCB: minimum copper spacing"
+  (severity error)
+  (constraint clearance (min 0.15mm)))
+
+# ---------------------------------------------------------------------------------------------------------
+# 2. Copper to the board edge
+# Why: the outline is routed with a tolerance; copper at the edge is exposed, burred or cut. A zone saved
+# before this rule existed keeps its old fill: refill, save, and measure the exported Gerbers too
+# (edge_check.py), because DRC judges a refilled copy.
+
+# SET: the page's recommended value, not its minimum
+(rule "JLCPCB: copper to board edge"
+  (severity error)
+  (constraint edge_clearance (min 0.3mm)))
+
+# ---------------------------------------------------------------------------------------------------------
+# 3. Holes
+# Why: a drill below the minimum is refused or priced as a special process; holes too close break out into
+# each other; a thin ring breaks out of its pad when the drill wanders.
+
+# SET: smallest plated drill at no extra cost
+(rule "JLCPCB: plated hole, smallest drill"
+  (severity error)
+  (condition "A.isPlated()")
+  (constraint hole_size (min 0.3mm)))
+
+# SET: smallest non-plated hole
+(rule "JLCPCB: non-plated hole, smallest drill"
+  (severity error)
+  (condition "A.Type == 'Pad' && !A.isPlated()")
+  (constraint hole_size (min 0.5mm)))
+
+# SET: via pad that goes with the drill above at no extra cost
+(rule "JLCPCB: via pad diameter"
+  (severity error)
+  (condition "A.Type == 'Via'")
+  (constraint via_diameter (min 0.6mm)))
+
+# SET: (via pad - via drill) / 2 from the page, plus margin
+(rule "JLCPCB: via annular ring"
+  (severity error)
+  (condition "A.Type == 'Via'")
+  (constraint annular_width (min 0.13mm)))
+
+# SET: ring of a component hole; hand-soldered pads want more
+(rule "JLCPCB: through-hole pad annular ring"
+  (severity error)
+  (condition "A.Type == 'Pad' && A.isPlated()")
+  (constraint annular_width (min 0.2mm)))
+
+# SET: drilled wall to drilled wall
+(rule "JLCPCB: hole to hole"
+  (severity error)
+  (constraint hole_to_hole (min 0.5mm)))
+
+# ---------------------------------------------------------------------------------------------------------
+# 4. No via in or against an SMD pad
+# Why: an open or tented via in a pad wicks the solder away from the joint; filled and capped via-in-pad is
+# a paid option on most stacks. The via HOLE keeps its own ring away from every SMD pad, whatever the net.
+
+# SET: at least the via's annular ring
+(rule "via hole to SMD pad"
+  (severity error)
+  (condition "A.Type == 'Via' && B.Type == 'Pad' && B.Pad_Type == 'SMD'")
+  (constraint physical_hole_clearance (min 0.15mm)))
+
+# The one exception: thermal vias inside an exposed thermal pad, as the maker's drawing shows them (drill and
+# pitch from the datasheet). Keep the paste windows between the vias, and have them covered on the far side
+# where the fabricator offers it. Exempt such a footprint from the rule BY NAME, in two places:
+#   1. here: replace the condition line of the rule above by one that names the footprint, for example for the
+#      footprints with the references U7 and U9:
+#
+#        (condition "A.Type == 'Via' && B.Type == 'Pad' && B.Pad_Type == 'SMD' && !B.memberOfFootprint('U7') && !B.memberOfFootprint('U9')")
+#
+#   2. in board.toml, with the reason, so that drc_run.py lists the exemption and a reviewer sees it:
+#
+#        [drc.via_in_pad_exempt]
+#        U7 = "exposed pad with the maker's 3 x 3 thermal vias, 0.3 mm drill (datasheet page 31)"
+#
+# memberOfFootprint takes a reference (U7), a pattern (U1*) or a footprint name. Name single parts: a pattern
+# that catches more than the parts with a drawn via pattern switches the rule off where it is needed.
+
+# ---------------------------------------------------------------------------------------------------------
+# 5. Silkscreen
+# Why: ink on a pad is removed by the fabricator or spoils the joint; text below the minimum height or
+# stroke fills in and cannot be read; the print is registered to the copper only within a tolerance.
+
+# SET: the page's silkscreen registration tolerance, plus margin
+# No (layer ...) line in this rule: with one, KiCad 9 never applies it (the pad is not on a silkscreen layer),
+# and nothing reports that. Proven on a board where such a rule had been "active" and never fired.
+(rule "silkscreen text to pads"
+  (severity error)
+  (condition "(A.Type == 'Text' || A.Type == 'Field') && B.Type == 'Pad'")
+  (constraint silk_clearance (min 0.2mm)))
+
+# SET: smallest legible text height of the page; 1.0 mm is the floor, never go below it
+(rule "silkscreen text height"
+  (severity error)
+  (layer "?.Silkscreen")
+  (condition "A.Type == 'Text' || A.Type == 'Field'")
+  (constraint text_height (min 1.0mm)))
+
+# SET: smallest silkscreen line width of the page, plus margin. 0.15 mm was the published minimum when this
+# file was written (as read in 2026-11): re-read the live minimum. The value here is a little above it on
+# purpose.
+(rule "silkscreen text stroke"
+  (severity error)
+  (layer "?.Silkscreen")
+  (condition "A.Type == 'Text' || A.Type == 'Field'")
+  (constraint text_thickness (min 0.16mm)))
+
+# ---------------------------------------------------------------------------------------------------------
+# 6. Courtyards
+# Why: two bodies in one place cannot be assembled; the pick-and-place nozzle and the rework iron need the
+# room the courtyard reserves. A footprint without a courtyard is invisible to this rule: make "footprint
+# has no courtyard" an error in the violation severities.
+
+# SET: 0 = courtyards may touch; give a positive value for hand-assembled boards
+(rule "courtyards do not overlap"
+  (severity error)
+  (constraint courtyard_clearance (min 0.0mm)))
+
+# ---------------------------------------------------------------------------------------------------------
+# 7. Thermal reliefs
+# Why: a pad that reaches its zone through one spoke carries the pad's whole current through that spoke
+# and can be a dry joint after reflow. Power pads usually want a solid connection instead (set it on the
+# pad or the zone), and then this rule does not apply to them.
+
+# SET: 2 as a floor; 4 where a pad carries current
+(rule "thermal relief: at least two spokes"
+  (severity error)
+  (constraint min_resolved_spokes 2))
+
+# ---------------------------------------------------------------------------------------------------------
+# 8. EXAMPLES: minimum widths per net class. Replace by the board's own classes, one block per class.
+# Why: a net class is a setting for new tracks, not a proof about the tracks that exist. These rules make a
+# track or a zone neck below the class width an error. The width comes from the current worksheet
+# (current, copper thickness, allowed temperature rise and voltage drop), not from habit. A rule for a
+# class that the board does not have never fires and does no harm, but delete it so the file says what
+# the board needs.
+
+# SET: the class name and the width from the current worksheet
+(rule "EXAMPLE power class: track width"
+  (severity error)
+  (condition "A.NetClass == 'POWER'")
+  (constraint track_width (min 0.5mm)))
+
+# SET: one rule per copper layer that carries this class; the width from the current worksheet
+(rule "EXAMPLE power class: narrowest zone neck, top layer"
+  (severity error)
+  (layer "F.Cu")
+  (condition "A.NetClass == 'POWER' && A.Type == 'Zone'")
+  (constraint connection_width (min 0.5mm)))
+
+# SET: a net that needs its own width
+(rule "EXAMPLE single net: track width"
+  (severity error)
+  (condition "A.NetName == '/VBUS' || A.NetName == 'VBUS'")
+  (constraint track_width (min 0.8mm)))
