@@ -15,12 +15,11 @@ utc_offset = 8
 windows = [["09:30", "12:00"], ["13:30", "18:30"]]
 weekdays = [0, 1, 2, 3, 4]   # Monday = 0
 
-[tolerance]                  # as read 2026-11 (from production drawings), re-read
-standard_mm = [3, 5]         # the supplier draws +-3 or +-5 mm
-design_mm = 5                # the tolerance the checks design for (REACH and SBEND judge the cable at length -+ this value).
-                             # PROVISIONAL: a value asked at +-3 can come back +-5; set 3 only after a production drawing shows +-3 held
-silent = true                # a tighter value asked in a drawing or a remark is NOT questioned: the standard is drawn
-note = "ask the narrowest standard on the drawing (+-3 mm), but design every cable to work at design_mm (+-5 mm): the supplier may draw any of its standard tolerances whatever was asked (asked tighter, drawn at +-5)"
+[tolerance]                  # as read 2026-11 (production drawings and the supplier's own e-mail), re-read
+standard_mm = [5]            # +-5 mm is the supplier's floor for every cable type, RF coax included
+design_mm = 5                # the tolerance the checks design for (REACH and SBEND judge the cable at length -+ this value)
+silent = true                # a tighter value asked in a drawing is drawn at +-5 without a word, or costs a question round
+note = "ask +-5 mm on the drawing and design every cable to work at +-5: the supplier states that +-5 is the tightest it can guarantee, RF included; tighter requests came back drawn at +-5"
 
 [limits]                     # as read 2026-11, re-read the live page
 files_max = 5                # files per quote item
@@ -54,7 +53,7 @@ applies = ["harness"]
 
 [[stock_defaults]]
 item = "cable"
-default = "blue jacketed semi-flexible coax, outer diameter 2.6 mm"
+default = "blue FEP-jacketed RG405 coax, outer diameter 2.2 to 2.6 mm (size for 2.6); the supplier's ONLY RF coax"
 applies = ["rf"]
 
 [[stock_defaults]]
@@ -64,7 +63,7 @@ applies = ["rf"]
 
 [[stock_defaults]]
 item = "cable"
-default = "standard round Cat6 patch cable, 24 AWG"
+default = "standard round Cat6 patch cable, 24 AWG, outer diameter 5.8 mm; with moulded 90-degree plugs a slim 28 AWG cable (OD 3.8) needs a custom mould at a high cost"
 applies = ["ethernet"]
 
 [[stock_defaults]]

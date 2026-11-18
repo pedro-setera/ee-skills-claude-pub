@@ -13,7 +13,7 @@ The sequence that would have saved days on the first orders:
 2. **Boards**, if any travel with the cables: ordered with the parts shop's warehouse as their address
    (`shipping-and-combine.md`). The board order itself belongs to the electronics skill.
 3. **Cables first.** They are the critical path: about 4 weeks from request to door. One length per harness that works
-   at the design tolerance (+-5) with the standard (+-3) asked, cavity tables and pictures in the maker's format, each non-default as "X, NOT Y", every field
+   at +-5 (the maker's floor, asked and designed for, the shortest cable still covering the route), the maker's only stock cables, cavity tables and pictures in the maker's format, each non-default as "X, NOT Y", every field
    read back. Record the line-to-cable map the moment the quote is ready.
 4. **The case.** Chart names in every field, nothing else about colour or masking, a short remark that contradicts
    nothing, print layers in the ink colours, the ink sheet in the PDF and renders in the ZIP.

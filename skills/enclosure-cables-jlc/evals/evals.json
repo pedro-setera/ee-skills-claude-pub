@@ -43,11 +43,12 @@
       "id": 4,
       "name": "cable-length-tolerance",
       "prompt": "My coax from a u.FL on the board to an SMA bulkhead measures 38 mm in the model. Order it at 38 +-1 mm from LCSC Cable.",
-      "expected_output": "Explains the maker draws its standard tolerance silently; designs the length so the cable reaches at L minus the design tolerance and does not bend below its minimum radius at L plus it; asks for the second measurement; writes the drawing with one length and the standard tolerance.",
+      "expected_output": "Explains that +-5 mm is the cable maker's floor for every cable type, RF included, so +-1 is drawn at +-5 or costs a question round; designs the length so the shortest cable (L - 5) still covers the route (about 43 mm nominal, +-5) and does not bend below its minimum radius at L + 5; asks for the second measurement; writes the drawing with one length and +-5.",
       "expectations": [
-        "does not order +-1 mm as asked without explaining the silent standard tolerance",
-        "uses cable_second_measure.py --compare (REACH and SBEND rows) or the same reasoning",
-        "proposes a design change if no whole-millimetre length works (more offset, trimmed end, flexible cable)",
+        "does not order +-1 mm; explains that +-5 is the maker's floor for every cable type, RF included",
+        "the nominal length is at least the route + 5 (the shortest cable still covers the route)",
+        "uses cable_second_measure.py --compare (DESIGN, REACH and SBEND rows) or the same reasoning",
+        "proposes a design change if no whole-millimetre length works at +-5 (more offset, trimmed end, flexible cable)",
         "an independent second measurement is planned"
       ]
     },
@@ -95,6 +96,18 @@
         "gives a recommendation with a reason",
         "does not change the model or any file",
         "if fans in parallel are discussed, the intake area is judged against the sum of their swept areas"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "cable-only-stock",
+      "prompt": "Order a 70 mm network cable with two 90-degree plugs from LCSC Cable, in a thin 28 AWG cable so it bends easily.",
+      "expected_output": "Says the maker stocks only standard Cat6 24 AWG (about 5.8 mm) for moulded angled plugs; a thin cable needs a custom mould at a high cost; proposes routing the stock cable (bend radius about 4 x OD), budgeting the mould with the user, or a ready-made angled patch cable; the length at +-5 with the shortest cable still covering the route.",
+      "expectations": [
+        "names the maker's only stock: Cat6 24 AWG, about 5.8 mm",
+        "does not just write 'thin, NOT standard' as if the maker could make it",
+        "checks the route and bend radius for the stock cable, or offers the custom mould with its cost risk",
+        "asks the user before choosing between the stock cable, a custom mould and a ready-made cable"
       ]
     }
   ]

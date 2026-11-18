@@ -59,12 +59,14 @@ proposes it to the user for this file, rewritten without names, order numbers or
 | # | What happened | What it cost | Check |
 |---|---|---|---|
 | L-28 | A cable was forgotten, and the user's choices of ends and routes came after the first drawings. A submitted quote cannot be edited. (Top 16 #4) | All cables re-entered as a new quote; a two-hour redraw; two quote numbers to track | 5: the full interconnect check and the choices first (CB-02, CB-03); 11: freeze |
-| L-29 | Tolerances tighter than the maker's standard were silently drawn at the standard; per-wire lengths brought a question. (Top 16 #15) | A marginal bend on a short coax; a question round | CB-11, CB-12; `cable_check.py` TOL; `cable_second_measure.py` REACH |
+| L-29 | Tolerances tighter than the maker's standard were silently drawn at the standard (+-5, its floor for every cable type); per-wire lengths brought a question. (Top 16 #15) | A marginal bend on a short coax; a question round | CB-11, CB-12; `cable_check.py` TOL; `cable_second_measure.py` REACH |
 | L-30 | Two measurements of a short coax differed by several millimetres: one side had assumed a connector body length | An afternoon to find which was right | CB-06; `review-briefs/route-second-measure.md`: poses from the maker's drawing, with source |
 | L-31 | A panel jack group was moved a few millimetres after the cables were ordered | An ordered short coax left with a marginal S-bend | CB-14, CB-15; the FRESH row; freeze before the quote |
 | L-32 | A lead was routed over a board's connectors | Sent back: "under, not over" | CB-05 |
 | L-33 | A header's gender and pitch were taken from a datasheet photo; the photo scaled to the wrong pitch | A wrong housing nearly ordered; the user measured the part | CB-04: the mating board's documents; ask the user to measure |
 | L-34 | A flexible coax was planned whose bend radius needed more straight room than the box had | A change of cable type | CB-08: the radius from the datasheet before the route |
+| L-87 | Lengths were designed at +-1 to +-3, and a crimped cable at route + 2; the maker's floor is +-5 for every cable type, RF included, and a tighter revision note cost a question round | Every length raised to route + 5; days of delay | CB-12, CB-13: design for +-5, the shortest cable still covering the route; `cable_second_measure.py` DESIGN (route floor) |
+| L-88 | Cable types the maker does not stock were designed; one needed a custom mould | E-mail questions, routes re-checked for the stock cables | CB-26: design for the maker's only stock; `cable_check.py` NONDEF |
 
 ## Phases 6 and 7: print design, reviews, the print
 
@@ -135,6 +137,12 @@ proposes it to the user for this file, rewritten without names, order numbers or
 | L-76 | A "revised drawing ready" mail arrived minutes after the first drawings, before any feedback | Confusion about which drawing was current | Check each drawing's date |
 | L-77 | No "review completed" mail came; the only sign was a failed automatic payment | Two hours | The watch reads the order page |
 | L-78 | Promised times ("10 to 60 minutes", "2 to 3 hours") were planned with | A plan that slipped daily | Rule 12: one supplier working day per question round |
+| L-89 | A supplier question came as an e-mail holding only a picture, and an "addition" mail with another question followed minutes later | A question nearly missed | Open every attachment, read the whole thread, answer every open question in ONE reply (`suppliers/after-order.md` section 1) |
+| L-90 | A value given for one cable was applied to another line, and the same mix-up came back a week later | One more round | Correct it in words each time and repeat the right value; both numbers on every line |
+| L-91 | Revised cable drawings came back line by line; lines that needed a decision waited silently for a mail question | Lines idle for hours unnoticed | 13: watch the order data every 30 minutes during a drawing revision (`templates/WATCH_PROMPT.md`) |
+| L-92 | After days of questions, one short polite note on the delay and its cost to the project was sent in the same thread | Nothing: a quick answer, and the order moved forward | 13: once, after a delay caused by questions |
+| L-93 | Deviations that change nothing (a tighter twist pitch than drawn, a parts-list count unlike the drawing and test lines) were on a revised drawing | Nothing: accepted without a round | `review-briefs/production-drawing.md`: revise only what breaks fit or function |
+| L-94 | A printed part took 2 to 3 more days after its powder coat; the whole case order shipped only when that part was done; the live chat gave a date, not a faster run | The case later than the tool's standard days | `suppliers/jlccnc-sheet-metal.md` section 7: plan 2 to 3 days for print after the coat |
 
 ## Phases 14 and 15: arrival and the manual
 
@@ -158,6 +166,6 @@ proposes it to the user for this file, rewritten without names, order numbers or
 
 These wait for evidence and are marked PROVISIONAL in the files they touch: whether drawn bare zones came coated;
 clean nut threads; the real coat and ink colours; cut-outs after the coat; the hand-work minutes for ground bonds
-and the continuity reached; the outcome of the cable revision round; each cable's real length, crimps and labels;
+and the continuity reached; each cable's real length, crimps and labels;
 the import duty; the heat run against the estimate; the radio through the closed box; which manual pages change
 after the first real assembly.

@@ -51,11 +51,12 @@ Method  (keep <REVIEWS>/WD_PROGRESS.md up to date)
       words AND the picture, and both agree with the mating header's own numbering;
    e. against the pin-out: each wire joins the same net at both ends; power and ground cannot be swapped by
       turning a plug; a keyed housing is used wherever a reversed plug would do harm;
-   f. the length: one value per harness, its tolerance the maker's standard (or the drawing says why not), the
+   f. the length: one value per harness, its tolerance the maker's floor from the capability sheet (+-5 mm as read 2026-11, never tighter), the
       definition "from where to where" in words; a branch has its own length; compare with route.design_length_mm;
    g. tinned ends: strip and tin length; which lead is which;
    h. cable type for coax and network cables: words that cannot be read as a stock default; each non-default as
-      "X, NOT Y"; outer diameter and jacket stated; connector part numbers named;
+      "X, NOT Y"; where the maker has only one stock cable for the type, that cable, accepted (design-rules
+      cables.md CB-26); outer diameter and jacket stated; connector part numbers named;
    i. angled or side-exit plugs: the orientation picture exists, shows both ends, the exit direction and the latch;
    j. the label: text, position, length within the limit; no product or board name;
    k. notes: no question, no alternative, no internal note, no loose extras.

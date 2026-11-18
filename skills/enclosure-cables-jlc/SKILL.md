@@ -148,7 +148,7 @@ Facts that raise the set (one is enough; unknown counts as yes): for sale or mor
 | "I know how this module stacks." | Read the maker's assembly page first. |
 | "The drawing has the main dimensions." | Every hole and cut-out from a datum, or the supplier asks. Run the drawing-equals-STEP check. |
 | "My own checks pass, so the files are fine." | The independent check on the exported files found several failures the builder's checks missed. |
-| "The cable needs plus or minus 1 mm." | The maker draws its standard tolerance silently; even a +-3 request can come back +-5. Design the cable to work at the design tolerance. |
+| "The cable needs plus or minus 1 mm." | The cable maker's floor is +-5 for every cable type (as read 2026-11): a tighter request is drawn at +-5 or costs a question round. Design the cable to work at +-5, the shortest one still covering the route. |
 | "Each wire gets its own length." | One length per harness: the longest route plus its allowance. |
 | "I will send the quote now and fix the list later." | A submitted cable quote cannot be edited. Freeze first. |
 | "Their line 4 is our cable 4." | Record the line map at the quote; write both numbers in every message. |

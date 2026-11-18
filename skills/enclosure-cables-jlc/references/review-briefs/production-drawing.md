@@ -6,8 +6,8 @@
 any Confirm. One agent, in every set. It answers, per order line: is this drawing fully right (confirm), or what
 exactly must change (one Revise note)?
 
-**This brief's outcome is PROVISIONAL:** it was written from one order in which most of the first drawings were
-wrong and one revision round was sent. How the supplier answers a Revise note is not yet known.
+Written from one order in which most of the first drawings were wrong and one revision round was sent; the lines
+came back one by one, and those that needed a decision waited for e-mail questions.
 
 **Set explicitly in the agent call.** The most capable model with image input, the highest effort.
 
@@ -59,7 +59,8 @@ For EACH line, in the order of the line map:
    d. wire standard and gauge; the terminal's part number and its gauge range on their BOM line: is the gauge
       inside the range?
    e. for coax and network cables: the cable they name (type, outer diameter, jacket, colour, conductor gauge)
-      and the connectors they name (part numbers or "generic"); judge whether it IS the cable ordered;
+      and the connectors they name (part numbers or "generic"); judge whether it IS the cable ordered (the maker's
+      stock cable, accepted in cables.json, is right);
    f. the length, where it is dimensioned from and to, and the tolerance; a branch's own length; a value near
       the length that is not the length (a twist pitch, a strip length) is not read as one;
    g. tinned ends: strip and tin lengths; h. heat-shrink, sleeves, anything fitted that was not ordered, anything
@@ -86,7 +87,9 @@ Findings  (one block per difference)
   - Cause, if visible: their stock default | our drawing unclear | line numbers mixed | unknown
   - Goes into the Revise note as: "<the line of the note>"
 blocker = a wrong position, net, gauge, part, cable type or a length that does not reach. major = tolerance,
-label, an unwanted extra. minor = cosmetic on their drawing with no effect on the build.
+label, an unwanted extra. minor = cosmetic on their drawing with no effect on the build, or a harmless deviation (a
+tighter twist pitch than drawn, a parts-list count that disagrees with the drawing and the test lines): accept it
+without a Revise line; revise only what breaks fit or function.
 
 What a pass needs (per line, for CONFIRM)
 Every position, gauge, cable type, part number, length, tolerance, label and pin-1 mark equals cables.json; no

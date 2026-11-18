@@ -1,13 +1,15 @@
 # After the order: questions, messages, production holds, the watch
 
 **As read 2026-11; re-read the live page before every order.** Sources: the question rounds of one sheet-metal order
-and one cable order. Used in phase 13. The cable revision round's outcome is **PROVISIONAL**
-(`lcsc-cable.md`).
+and one cable order. Used in phase 13. The cable revision round is in `lcsc-cable.md`; the delivered cables are
+**PROVISIONAL**.
 
 ## 1. When a question arrives
 
-1. **Read every thread about that part.** Two people may write about one question in separate threads within
-   minutes. Decide only when all are read.
+1. **Read every thread and every attachment about that part.** Two people may write about one question in separate
+   threads within minutes; a question may come only as a picture attachment; a second "addition" mail may follow
+   minutes after the first. Decide only when all are read, then answer every open question in ONE reply, naming
+   line and cable on each point.
 2. **Give the user three lines:** what they ask, what it means for the part, the one recommended answer.
 3. **Draft an answer to exactly what is asked** (section 2). Show it. Send only after the user's OK, or under a
    standing OK for this order that is written in the state file.
@@ -23,11 +25,15 @@ and one cable order. Used in phase 13. The cable revision round's outcome is **P
 - **In their words.** Use the names on their form and in their question ("clinch nut", not "fastener").
 - **Name the part by both numbers:** theirs and ours. For cables: "line -2 (CAB-01)".
 - **Short numbered lines in simple English.** For a correction: "X, NOT Y".
-- **Their number and ours** when a value is discussed: "Your drawing: 80 +-5. Required: 85 +-3."
+- **Their number and ours** when a value is discussed: "Your drawing: 80 +-5. Required: 85 +-5."
 - **One picture** where a picture says it: a pin map, a plug view, an ink table. No product or board names in it:
   End A / End B, P1 / P2, part numbers (SKILL.md rule 20).
 - **For artwork, send corrected FILES, not an explanation** (section 3).
 - **No names of people, no order history, no apology paragraphs.**
+- **A mix-up comes back.** A value applied to the wrong line returned a week later: correct it in words each time
+  and repeat the right value.
+- **On a delay caused by their questions,** one short polite note on what it costs the project, in the same thread,
+  was answered within hours and moved the order forward. Once, not as a habit.
 - Template: `templates/SUPPLIER_MESSAGE.md`; for a cable drawing: `templates/REVISE_NOTE.md`.
 
 Model answers:
@@ -39,7 +45,7 @@ Part <their part number> (<our part number>):
 ```
 
 ```
-Line -5 (CAB-05):
+Line -3 (CAB-02):
 1. P1 is a 4-position housing, NOT 2-position.
 2. P1 wires in positions 1 and 4. Positions 2 and 3 EMPTY.
 3. Wire 26 AWG, NOT 20 AWG (terminal range 24-30 AWG).
@@ -97,7 +103,7 @@ user's (`templates/WATCH_PROMPT.md`).
 | No quote after 2 business days | nothing | one nudge, timed before their morning |
 | Case in review | a part "pending", a question mail, the pay button | section 1; or gate 3 |
 | Paid, cables | "drawing need approval" | the field-by-field check |
-| Revise sent | "revised drawing ready" | check again, only the revised lines plus each drawing's date |
+| Revise sent | each line's drawing status in the order-detail data, every 30 minutes (modify, wait_confirm, confirm; a new date folder in the PDF address); a question mail | check each returned line at once and confirm it when fully right; answer the questions in one reply |
 | In production | a hold, a step that stops moving | section 3 |
 | Shipped | tracking | write the incoming check (phase 14) before the parcel arrives |
 

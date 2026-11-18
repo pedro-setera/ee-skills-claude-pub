@@ -4,7 +4,7 @@
  "cable_types": {
   "wire_bundle": {"min_bend_r": 5.0},
   "network": {"min_bend_x_od": 4.0},
-  "coax_132": {"od_mm": 1.32, "min_bend_r": 6.0, "stiff": true}
+  "coax_rg405": {"od_mm": 2.6, "min_bend_r": 6.0, "stiff": true}
  },
  "cables": [
   {
@@ -16,8 +16,8 @@
    "label_position": "15 mm from P1",
    "wire_standard": "UL1007",
    "twisted": false,
-   "length_mm": 65,
-   "tol_mm": 3,
+   "length_mm": 68,
+   "tol_mm": 5,
    "length_def": "wire exit of P1 to wire exit of P2",
    "ends": [
     {"id": "P1", "kind": "housing", "mates": "J1",
@@ -49,7 +49,7 @@
    "wire_standard": "UL1007",
    "twisted": true,
    "length_mm": 41,
-   "tol_mm": 3,
+   "tol_mm": 5,
    "length_def": "wire exit of P1 to the wire tips of P2",
    "ends": [
     {"id": "P1", "kind": "housing", "mates": "J2",
@@ -72,21 +72,21 @@
    "qty": 5,
    "label": "CAB-03 RF",
    "label_position": "at the middle of the cable",
-   "colour": "grey",
-   "length_mm": 50,
-   "tol_mm": 3,
+   "colour": "blue",
+   "length_mm": 53,
+   "tol_mm": 5,
    "length_def": "end of the outer conductor at P1 to end of the outer conductor at P2",
-   "cable_spec": "50 ohm micro-coax, FEP jacket, outer diameter 1.32 mm",
+   "cable_spec": "RG405 coax, blue FEP jacket, 50 ohm",
    "ends": [
-    {"id": "P1", "kind": "jack", "part": {"mpn": "EX-SMA-BH-132", "supplier_code": "C0000006", "short": "SMA bulkhead jack", "description": "SMA bulkhead jack, solder, for 1.32 mm coax"}},
-    {"id": "P2", "kind": "plug", "part": {"mpn": "EX-SMA-P-132", "supplier_code": "C0000007", "short": "SMA straight plug", "description": "SMA straight plug, solder, for 1.32 mm coax"}}
+    {"id": "P1", "kind": "jack", "part": {"mpn": "EX-SMA-BH-405", "supplier_code": "C0000006", "short": "SMA bulkhead jack", "description": "SMA bulkhead jack, solder, for RG405 coax"}},
+    {"id": "P2", "kind": "plug", "part": {"mpn": "EX-SMA-P-405", "supplier_code": "C0000007", "short": "SMA straight plug", "description": "SMA straight plug, solder, for RG405 coax"}}
    ],
    "wires": [],
    "non_defaults": [
-    {"item": "cable", "want": "micro-coax, FEP jacket, OD 1.32 mm", "not": "the stock semi-flexible coax"},
     {"item": "connector", "want": "the connectors of the BOM, by part number", "not": "connectors chosen by the production line"}
    ],
-   "route": {"cable_type": "coax_132", "measure_a_mm": null, "measure_b_mm": null, "min_bend_r": 6.0, "allowance_mm": null, "note": ""}
+   "accept_defaults": ["cable"],
+   "route": {"cable_type": "coax_rg405", "measure_a_mm": null, "measure_b_mm": null, "min_bend_r": 6.0, "allowance_mm": null, "note": ""}
   }
  ]
 }

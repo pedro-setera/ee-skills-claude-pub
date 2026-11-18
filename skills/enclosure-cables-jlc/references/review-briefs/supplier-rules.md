@@ -66,7 +66,8 @@ Method  (harvest first, measure second, compare third; keep <REVIEWS>/SR_PROGRES
 4. Compare each drawing with its STEP: drawing_vs_step.py, then by eye on three features per part.
 5. Read every word of every remark, field sheet, PDF and layer name. Flag EVERY word that is not a field value or
    a chart name: a colour system, masking, "if possible", "fallback", "or similar", "please confirm", a question,
-   a tolerance tighter than the published one, an ask about a process step. Such words are blockers.
+   a tolerance tighter than the published one (for cables: under the maker's +-5 floor), a cable type the maker
+   does not stock, an ask about a process step. Such words are blockers.
 6. Unzip each archive that will be uploaded: does it hold exactly the listed files, with the 3D file, named as the
    part? Check the STEP headers and file metadata for personal names and paths.
 

@@ -11,13 +11,15 @@ What it does
     ends face each other on parallel axes, the axial distance and the sideways offset of the S.
     COMPARE (--compare). Rows per cable and wire:
       CMP      a and b and their difference: at most 2 mm, or a written cause in `route.note`
-      DESIGN   design length = the LARGER of (the LONGER of the two measures + allowance by end type: fixed at both ends +2,
-               an end trimmed and soldered at assembly +10) and (the shortest path at the cable's MINIMUM radius,
-               `route.second.reach_mm`, + the design tolerance D), ONE length per cable = the longest wire's result, rounded
-               UP to 1 mm. So the shortest cable the maker may deliver (L - D) reaches by construction; when the second term
-               wins the row says "raised from <a> to <b> so the shortest cable the maker may deliver (L - D) still reaches".
-               Without second-measure data there is no reach floor (the first term only). A `route.allowance_mm` set by hand
-               still sets the first term; the floor applies anyway.
+      DESIGN   design length = the LARGEST of (the LONGER of the two measures + allowance by end type: fixed at both ends +2,
+               an end trimmed and soldered at assembly +10), (the LONGER of the two measures + the design tolerance D: the route
+               floor) and (the shortest path at the cable's MINIMUM radius, `route.second.reach_mm`, + D: the reach floor), ONE
+               length per cable = the longest wire's result, rounded UP to 1 mm. So the shortest cable the maker may deliver
+               (L - D) still covers the measured route by construction (a cable shorter than its route is the one fault that
+               cannot be fixed in the box); the extra length up to L + D becomes one more bend, judged by SBEND. When a floor
+               wins the row says "raised from <a> to <b> so the shortest cable the maker may deliver (L - D) is still as long as
+               the measured route" (or "still reaches" for the reach floor). Without second-measure data there is no reach
+               floor. A `route.allowance_mm` set by hand still sets the first term; the floors apply anyway.
       LENGTH   `length_mm` in cables.json equals the design length (--apply writes it)
       TOL      the tolerance asked on the drawing (`tol_mm`) is not tighter than the supplier's standard
       REACH    at length - DESIGN tolerance the cable still reaches (not shorter than the shortest path at minimum radius);
@@ -25,8 +27,8 @@ What it does
       SBEND    stiff cables (coax, network, `stiff = true`): the smallest radius of the rest shape of an S between
                parallel axes (elastica: axial distance, offset, length) at length - D, length, length + D
       The design tolerance D is `[tolerance] design_mm` of the capability sheet, else the WIDEST of its `standard_mm`: the
-      supplier may draw any of its standard tolerances whatever was asked (asked tighter, drawn at +-5). REACH and SBEND
-      are judged at D; their row text also gives the result at the
+      supplier may draw any of its standard tolerances whatever was asked (asked tighter, drawn at +-5; +-5 is the cable
+      maker's floor as read 2026-11). REACH and SBEND are judged at D; their row text also gives the result at the
       cable's own `tol_mm` (the value asked on the drawing, normally the narrowest standard). TOL and the drawing keep `tol_mm`.
       FRESH    measure a was taken from the routes file as it is now
     A cable that is too long between two fixed ends has to bow: on a short stiff cable 2 mm more can halve the radius.
@@ -405,10 +407,14 @@ def compare(job, a) -> tuple[mc.Rows, list]:
         r = c.get("route") or {}
         note = str(r.get("note", "")).strip()
         design, longer, alw, awhy, pairs = design_length(c, cfg)
-        first = design                                    # the allowance term; the reach floor may raise it
+        first = design                                    # the allowance term; the two floors may raise it
+        rfloor = None if longer is None else int(math.ceil(longer + dtol[0] - 1e-9))   # route floor: L - D >= the measured route
         floor = reach_floor(c, dtol[0])
+        raised = None
+        if design is not None and rfloor > design:
+            design, raised = rfloor, "route"
         if design is not None and floor is not None and floor > design:
-            design = floor
+            design, raised = floor, "reach"
         for k, x, y in pairs:
             rn = cid + ("/" + k if k else "")
             if not isinstance(x, (int, float)) or not isinstance(y, (int, float)):
@@ -422,16 +428,22 @@ def compare(job, a) -> tuple[mc.Rows, list]:
         if design is None:
             rows.add(f"{cid}-DESIGN", sec, "design length", "not computed: a measure is missing", "longer of the two + allowance", "fail")
             continue
-        if design != first:
+        if raised == "route":
+            dtext = (f"{design} mm: raised from {first} to {design} so the shortest cable the maker may deliver (L - D) is still as long "
+                     f"as the measured route (longer measure {longer:.2f} + design tolerance {dtol[0]:g}, rounded up; + {alw:g} ({awhy}) "
+                     f"gave {first})")
+        elif raised == "reach":
             dtext = (f"{design} mm: raised from {first} to {design} so the shortest cable the maker may deliver (L - D) still reaches "
                      f"(shortest path at the minimum radius {r['second']['reach_mm']:.2f} + design tolerance {dtol[0]:g}, rounded up; longer measure "
                      f"{longer:.2f} + {alw:g} ({awhy}) gave {first})")
         else:
             dtext = f"{design} mm = longer measure {longer:.2f} + {alw:g} ({awhy}), rounded up to 1 mm"
+            dtext += f"; the route floor {rfloor} mm (longer measure + design tolerance {dtol[0]:g}) is not higher"
             if floor is not None:
                 dtext += f"; the reach floor {floor} mm (shortest path + design tolerance {dtol[0]:g}) is not higher"
         rows.add(f"{cid}-DESIGN", sec, "design length", dtext,
-                 "the larger of (the longer of the two + allowance by end type) and (shortest path at the minimum radius + design tolerance); "
+                 "the largest of (the longer of the two + allowance by end type), (the longer of the two + design tolerance: the shortest "
+                 "cable the maker may deliver still covers the route) and (shortest path at the minimum radius + design tolerance); "
                  "ONE length per cable = the longest wire's", "pass")
         if a.apply and c.get("length_mm") != design:
             c["length_mm"] = design

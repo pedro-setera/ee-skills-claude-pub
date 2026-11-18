@@ -17,9 +17,9 @@ Watch each order with its deadline in the supplier's time, answer questions the 
 ### The watch
 
 1. **Take a baseline.** Open every order page and fill the baseline table of `ORDER_LOG.md`: order, status in the page's own words, held parts, ships to, last change. For each open step compute the deadline: `python -I <skill folder>/scripts/supplier_calendar.py deadline --answer --at <ISO time the message came> --project <project>/mech` (or `--pay`). From now on report only changes.
-2. **Offer the watch** (`templates/WATCH_PROMPT.md`): every few hours, never minutes, each order page loaded once, one push when a status changes, ending by itself at delivery. Offer the mailbox check as an opt-in that drafts and never sends. If the browser is signed out the watch says so once and stops; it never signs in.
+2. **Offer the watch** (`templates/WATCH_PROMPT.md`): every few hours (every 30 minutes only while cable drawings are being revised, step 16b), each order page loaded once, one push when a status changes, ending by itself at delivery. Offer the mailbox check as an opt-in that drafts and never sends. If the browser is signed out the watch says so once and stops; it never signs in.
 3. **Know the signals, and check before raising an alarm.** A metal order may send no "review completed" message: on one order the only signal was an "automatic payment failed" mail, and the pay button appears only after every part is reviewed. A held part shows a pending status on the order page until the answer is processed. Read the page first, then report.
-4. **Promise nothing.** Pass the supplier's time statements on as "the supplier says". Plan one supplier working day per question round. Real steps seen on one metal order: plain parts approved about half a day after a night submit, a part with questions more than two days; raw parts cut in 4 days, coated 6, coated and printed 7.
+4. **Promise nothing.** Pass the supplier's time statements on as "the supplier says". Plan one supplier working day per question round. Real steps seen on one metal order: plain parts approved about half a day after a night submit, a part with questions more than two days; planned by the order page: raw parts 4 days, coated 6, coated and printed 7; the print step alone then took 2 to 3 days after the coat, and the order shipped with its slowest part.
 
 ### A supplier question
 
@@ -40,10 +40,14 @@ Watch each order with its deadline in the supplier's time, answer questions the 
 14. **Run the check:**
     `python -I <skill folder>/scripts/production_drawing_check.py --project <project>/mech --sent <date of our last note>`
     Per cable the verdict is CONFIRM, REVISE or NOT DECIDED, with a ready note. On one order most of the drawings were wrong: wires in the wrong positions, a gauge outside the crimp's range, a standard cable instead of the thin one asked, a jacketed coax and generic connectors instead of the named ones, and the standard tolerance instead of the one asked.
-15. **Put everything wrong into ONE revision round.** Per line a note from `templates/REVISE_NOTE.md`: short numbered lines, "X, NOT Y", both numbers, one picture (pin map, wiring sketch or plug view) within the note's length and picture limits on the capability sheet. Show all notes to the user together, then enter them in one session.
+15. **Put everything wrong into ONE revision round.** Revise only what breaks fit or function: a tighter twist pitch than drawn, and a parts-list count that disagreed with the drawing and the test lines, were accepted without a round. Per line a note from `templates/REVISE_NOTE.md`: short numbered lines, "X, NOT Y", both numbers, one picture (pin map, wiring sketch or plug view) within the note's length and picture limits on the capability sheet. Show all notes to the user together, then enter them in one session.
 16. **Confirm only a line that is fully right,** with the user's permission and written pass conditions: every position, gauge, cable type, part number, length, tolerance, label and pin-1 mark equals `cables.json`, and the drawing is dated after our last note. Confirm starts the assembly of that line. Save a screenshot of the new status.
 
-> **PROVISIONAL (waits for evidence):** the outcome of the cable revision round: which note forms worked, how many rounds were needed, whether non-default cable types and a tighter tolerance were accepted, and the real production start and delivery dates after the Confirm.
+16b. **Watch the revised lines every 30 minutes** while drawings are being revised: they come back line by line, and a line that needs a decision waits silently for an e-mail question. Read the order-detail data (each line's drawing status: modify = in revision, wait_confirm = to review, confirm = done; a new drawing shows as a new date folder in the line's PDF address), check each returned line at once, confirm it as soon as it is fully right and the user has said OK (step 16; SKILL.md rule 15), and close the browser tab after each check. Back to the slow watch after the last Confirm.
+16c. **Answer questions in ONE reply.** A question may come only as a picture attachment, and a second mail may follow minutes later: open every attachment, read the whole thread, then answer every open question in one reply, line and cable named on each point (`suppliers/after-order.md` section 1). A line mix-up may come back: correct it in words each time and repeat the right value.
+16d. **On a delay caused by their questions,** one short polite note in the same thread on what the delay costs the project was answered within hours and moved the order forward. Once, not as a habit.
+
+> **The revision round (2026-11):** one Revise round; the lines came back one by one; some were right the next day, others waited on e-mail questions that settled the +-5 floor and the maker's only stock cables (`suppliers/lcsc-cable.md`). **PROVISIONAL:** the real production start and delivery dates after the Confirm.
 
 ### Always
 
@@ -53,7 +57,7 @@ Watch each order with its deadline in the supplier's time, answer questions the 
 
 ## Questions for the user
 
-- Shall I check the order pages every few hours and tell you only when a status changes?
+- Shall I check the order pages every few hours (every 30 minutes while cable drawings are being revised) and tell you only when a status changes?
   - Suggested: yes, ending by itself at delivery.
   - Why: you hear about each step without asking, and nothing when nothing changes.
 - The supplier asks `<question>` about `<their number> (<our number>)`. Send this answer? (draft)

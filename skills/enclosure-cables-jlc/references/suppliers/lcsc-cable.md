@@ -4,10 +4,11 @@
 its production drawings, and one real order. One order is one data point. The machine-readable
 copy is the capability sheet (`templates/lcsc-cable.capability.toml`, copied to `<project>/mech/suppliers/`).
 
-**PROVISIONAL:** the outcome of a revision round. On the order behind this page most of the first production
-drawings were wrong and one revision round was sent; whether the supplier then accepted each non-default item (cable
-types, a tight tolerance, empty cavities, named connectors) is not yet known. So is everything
-about the delivered cables: real lengths, crimps, labels, import duty.
+**The revision round (2026-11):** most of the first production drawings were wrong and one Revise round was sent.
+The lines came back one by one: some were right and confirmed the next day; others waited on e-mail questions that
+settled three facts: +-5 mm is their floor for every cable type, RF included; their only RF coax is blue RG405; a
+slim network cable with moulded angled plugs needs a custom mould (section 3). **PROVISIONAL:** everything about the
+delivered cables (real lengths, crimps, labels, import duty).
 
 ## 1. The path through the site
 
@@ -41,27 +42,34 @@ otherwise. Seen on one order:
 
 | Item | Their default |
 |---|---|
-| Tolerance | +-5 mm drawn when a tighter value than standard was asked |
+| Tolerance | +-5 mm for every cable type, RF coax included: their floor (their own statement). A tighter request is drawn at +-5 without a word, or costs a question round |
 | Pin-out of a harness | Wires in positions 1, 2, 3, 4 in order at both ends; no empty cavity |
-| Short coax | A jacketed semi-flexible coax of 2.6 mm outer diameter (a bare family name was read as this) |
+| Short coax | Blue FEP-jacketed RG405, outer diameter 2.2 to 2.6 mm (size for 2.6). **Their only RF coax** |
 | Coax connectors | Generic connectors bought by the production line, not the named part numbers |
-| Network cable | A standard round 24 AWG patch cable, not a slim one |
+| Network cable | Standard round Cat6, 24 AWG, outer diameter 5.8 mm. With moulded angled plugs a slim 28 AWG cable (OD 3.8) needs a custom mould at a high cost (or the line is refunded) |
 | Network plugs | Straight moulded plugs unless a picture shows the exits |
 | Loose extras | Fitted on the wires |
 | Two-row housing numbering | 1..n down one row, n+1..2n down the other |
 
 Write each non-default first in More Requirements and on the drawing as "X, NOT Y" (`design-rules/cables.md` CB-21).
-`cable_check.py` (row NONDEF) wants every default either countered or accepted.
+`cable_check.py` (row NONDEF) wants every default either countered or accepted. **Three defaults are their only stock**
+(the tolerance, the RF coax, the network cable): design for them from the start and accept them (CB-26); "X, NOT Y"
+cannot buy what they do not make.
 
 Got right the first time: housings and terminals given by the supplier's part code; label texts (printed on
 heat-shrink); tinned ends and their lengths; angled plug exits once shown a picture; a simple two-wire lead.
 
+Harmless deviations are accepted without a round: a tighter twist pitch than drawn, a parts list whose terminal
+count disagrees with the drawing and the test lines. Revise only what breaks fit or function.
+
 ## 4. Tolerances
 
-Standard +-3 or +-5 mm. A tighter value is **not questioned**: the standard is drawn silently, and even a +-3
-request can come back +-5. Design to +-5 (`[tolerance] design_mm`, PROVISIONAL) and ask +-3
-(`design-rules/cables.md` CB-12). One length per harness: the bundle is threaded through the housing, then
-crimped, so per-wire lengths are not made and a per-wire table brings a question.
+**+-5 mm is their floor, for every cable type, RF coax included** (their own statement: the tightest they can
+reliably guarantee; for harnesses a tighter one brings a higher risk of deviation). Tighter requests came back drawn
+at +-5 without a word, and a tighter Revise note then cost a question round of days. Ask +-5, never less, and design
+every cable to work over nominal +-5 with its minimum still covering the route (`design-rules/cables.md` CB-12,
+CB-13). One length per harness: the bundle is threaded through the housing, then crimped, so per-wire lengths are
+not made and a per-wire table brings a question.
 
 ## 5. Statuses, from quote to production
 
@@ -72,7 +80,11 @@ crimped, so per-wire lengths are not made and a per-wire table brings a question
 4. **Drawing in Progress**: about 3 business days.
 5. **Drawing need Approval**: an automatic "drawing confirmation" mail. Each line has its own production drawing PDF.
 6. **Confirm or Revise, per line.** A revised line shows as modified; an automatic "revised drawing ready" mail
-   follows.
+   follows. Revised drawings come back line by line, and a line that needs a decision waits silently for an e-mail
+   question: watch the order-detail data every 30 minutes instead of waiting for mails (each line's drawing status:
+   modify = in revision, wait_confirm = to review, confirm = done; a new drawing shows as a new date folder in the
+   line's PDF address). Confirm each line as soon as it is fully right and the user has said OK (SKILL.md rule 15);
+   close the browser tab after each check.
 7. Production after Confirm: 10 business days were quoted.
 
 The supplier's process is fixed: asking for drawings before payment was ignored.
@@ -90,6 +102,14 @@ The supplier's process is fixed: asking for drawings before payment was ignored.
   picture (pin map, wiring sketch or plug view). `production_drawing_check.py` writes the note; it flags a note above
   the limit and does not shorten it.
 - Their pin-1 mark on a housing is a pen dot at cavity 1.
+- **Their questions come by e-mail, sometimes only as a picture attachment, and in bursts** (a second "addition" mail
+  a few minutes after the first). Open every attachment and read the whole thread, then answer every open question
+  in ONE reply, naming line and cable on each point.
+- **A line mix-up comes back.** A value given for one cable was applied to another line, and the same mix-up
+  returned a week later. Correct it in words each time ("that length was for line -A, not line -B") and repeat
+  the right value.
+- **A short polite note on the delay and what it costs the project,** in the same thread, was answered within hours
+  and moved the order forward. Once, not as a habit.
 - **Do not settle specifications by e-mail after payment.** Customer service "noted and confirmed" several points on
   one order; only one reached the drawings. Wait for the drawings and fix everything in one Revise round.
 
@@ -100,7 +120,7 @@ The supplier's process is fixed: asking for drawings before payment was ignored.
 | Quote | 1 to 3 business days, plus one per question. A request sent at the weekend waited for their working week |
 | Reply to an e-mail | half a working day to a day; over a weekend from Friday to Monday; minutes for a clear picture |
 | Drawings after payment | about 3 business days; drawings finished on a Friday were released on Monday |
-| One Revise round | at least 1 business day |
+| One Revise round | at least 1 business day; lines come back one by one; a question on a line adds a day |
 | Production after Confirm | 10 business days quoted |
 | Express shipping | 3 to 7 days |
 | **Request to door** | **about 4 weeks** |

@@ -20,7 +20,7 @@ Every connector of every board and every panel part ends in a cable, or has a re
 ## The cables
 | ID | Name | From (P1) | To (P2) | Type | Wires | Gauge | Max current | Length (mm) | Tol | Label |
 |---|---|---|---|---|---|---|---|---|---|---|
-| <CAB-01> | <power> | <housing, 2 positions> | <tinned 4 mm> | <harness> | <2> | <22> | <2 A> | <rough 120 | final 123> | <+-3> | <CAB-01 POWER> |
+| <CAB-01> | <power> | <housing, 2 positions> | <tinned 4 mm> | <harness> | <2> | <22> | <2 A> | <rough 120 | final 132> | <+-5> | <CAB-01 POWER> |
 
 ## The user's choices (asked once, before any drawing)
 | Topic | Choice | The user's words, date |
@@ -32,9 +32,9 @@ Every connector of every board and every panel part ends in a cable, or has a re
 | Ends trimmed at assembly | <which> | |
 
 ## Lengths (from phase 5)
-| ID | First measure | Second measure | Difference and its cause | Allowance | Ordered length | Works at the design tolerance (+-D) |
+| ID | First measure | Second measure | Difference and its cause | Allowance or floor | Ordered length | Works at the design tolerance (+-D) |
 |---|---|---|---|---|---|---|
-| <CAB-01> | <121.4> | <120.9> | <0.5> | <+2> | <123> | <yes: reach and bend rows pass> |
+| <CAB-01> | <121.4> | <120.9> | <0.5> | <+10: tinned end trimmed at assembly (above the route floor, +5)> | <132> | <yes: reach and bend rows pass> |
 
 ## Parts per cable (live stock on <date>)
 | ID | End | Housing or plug (maker part, supplier code) | Terminal (maker part, supplier code, wire range) | In stock |

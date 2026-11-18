@@ -85,7 +85,8 @@ a part that does not apply to THIS part.
   e-mail has been sent to you".
 - Questions arrive by e-mail with a subject that names the part's own number. Two people may answer the same
   question in separate threads: read every new thread about the part before deciding it is closed.
-- The live chat on the order page reaches the same team. It does not speed up a review.
+- The live chat on the order page reaches the same team. It does not speed up a review; on a slow production step
+  it gives a date, not a faster run.
 - **The file review does not check the print file's inks.** That question came at the print step, after payment,
   during production (`design-rules/panel-graphics.md` PG-10 to PG-14).
 
@@ -98,7 +99,8 @@ a part that does not apply to THIS part.
 | The review step after each answer | 16 to 24 hours | one working day per question (SKILL.md rule 12) |
 | A part with questions | more than two days in review | |
 | Promised times on page and chat | "10 to 60 minutes", "2 to 3 hours" | are estimates |
-| Production: raw parts / powder / powder + silkscreen | 4 / 6 / 7 days | the tool said "standard 5 days" |
+| Production: raw parts / powder / powder + silkscreen | 4 / 6 / 7 days, as planned by the order page | the tool said "standard 5 days" |
+| Silkscreen after the powder coat | 2 to 3 days on its own | plan 2 to 3 days for a printed part; the whole order ships only when its slowest part is done |
 | To the shipping centre, then express | about 1 day, then 2 to 4 days | |
 
 A payment after their evening starts production a working day later (`order-flow.md`).

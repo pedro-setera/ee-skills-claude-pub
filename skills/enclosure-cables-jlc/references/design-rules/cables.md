@@ -65,7 +65,9 @@ How to read a rule: the rule; **Number** with its source; **Check**; **Why**.
 - Rule: every arc of a route is at or above the cable's minimum radius. Coax: the value on its datasheet. Network
   cable: about 4 times its outer diameter. Flat cable: by its maker. Wire bundles: a few diameters.
 - Number: built-in types of `cable_common.py`: wire bundle R 5 mm, network 4 x OD, flat 5 x OD, coax none (the
-  datasheet radius of the chosen cable must be given in `route.min_bend_r`).
+  datasheet radius of the chosen cable must be given in `route.min_bend_r`). The cable maker's stock cables (as read
+  2026-11, CB-26): a jacketed RG405 coax up to 2.6 mm outer diameter, radius from its datasheet; a Cat6 24 AWG
+  network cable of 5.8 mm, about 23 mm (4 x OD).
 - Check: `cable_route.py` row BEND; `cable_second_measure.py` (REACH at the minimum radius).
 - Why: a thicker flexible coax could not be used at all: its radius needed more straight room than the box had.
 
@@ -94,39 +96,42 @@ How to read a rule: the rule; **Number** with its source; **Check**; **Why**.
 - Why: the maker threads the whole bundle through the housing, then crimps. Per-wire lengths brought a question and
   a day.
 
-### CB-12 Design to the widest tolerance the maker may draw
-- Rule: ask the maker's standard tolerance and design every cable to work at the design tolerance (the widest one
-  the maker may draw). A tighter one is not questioned: it is silently drawn at the standard. Keep a tight tolerance only where it is essential, say why on the drawing, and plan a revision
-  round for it.
-- Number: as read 2026-11: +-3 or +-5 mm (`[tolerance] standard_mm` of the capability sheet). The checks design for
-  `[tolerance] design_mm` (seed: 5, PROVISIONAL: a branch asked at +-3 came back +-5; set 3 only after a production
-  drawing shows +-3 held), else for the widest standard value. The drawing asks the narrowest standard (+-3).
+### CB-12 Design to the maker's tolerance floor
+- Rule: ask the maker's tightest guaranteed tolerance, ask exactly that on the drawing, and design every cable to
+  work over nominal +- that value. Never ask for less: a tighter value is drawn at the floor without a word, or
+  costs a question round.
+- Number: as read 2026-11: +-5 mm for every cable type, RF coax included (the maker's own statement;
+  `[tolerance] standard_mm` and `design_mm` of the capability sheet).
 - Check: `cable_check.py` row TOL ("the supplier draws its standard tolerance silently; design for it");
   `cable_second_measure.py` row TOL (the value asked) and rows REACH and SBEND at L - D, L, L + D, D = the design
-  tolerance; their text also shows the result at the tolerance asked.
-- Why: cables asked at +-1 and a branch asked at +-3 came back drawn at +-5, with no question.
+  tolerance.
+- Why: tighter tolerances asked on drawings came back drawn at +-5 with no question; a tighter one asked in a
+  revision note cost a question round, and the maker then wrote that +-5 is the tightest it can guarantee.
 
-### CB-13 Allowance by end type, and the reach floor (PROVISIONAL)
-- Rule: design length = the larger of (longer measurement + allowance) and (the shortest path at the cable's minimum
-  radius + the design tolerance D), rounded up to a whole millimetre, so that the shortest cable the maker may deliver
-  still reaches. Crimped or plugged at both ends: a small allowance. An end that is trimmed and soldered at assembly:
-  a generous one, cut to fit.
+### CB-13 The shortest cable still covers the route; allowance by end type (PROVISIONAL)
+- Rule: a cable shorter than its route is the one fault that cannot be fixed in the box. Design length = the
+  largest of (longer measurement + allowance by end type), (longer measurement + the design tolerance D: the route
+  floor) and (the shortest path at the cable's minimum radius + D: the reach floor), rounded up to a whole
+  millimetre, so the shortest cable the maker may deliver (L - D) still covers the route. Both ends fixed (coax
+  between two jacks, a network cable between two sockets): route + D; the extra length up to route + 2D becomes one
+  more bend at assembly, so the model must show room for it (SBEND at L + D, CB-14). An end trimmed and soldered at
+  assembly: route + a generous allowance, cut to fit. A crimped harness: one length (CB-11), its minimum at least
+  the longest wire's route; a branch to a third connector has its own single length by the same rule.
 - Number: PROVISIONAL starting values, cables not yet on the bench: `allowance_crimped_mm` 2.0,
-  `allowance_trimmed_mm` 10.0; D = 5 (`[tolerance] design_mm`). Where the second measure gives the reach
-  (`route.second.reach_mm`) and the floor wins, the DESIGN row says "raised from <a> to <b> so the shortest cable the
-  maker may deliver (L - D) still reaches" (the example harness: 65 to 67 mm; the example coax: 50 to 51). Without
-  second-measure data there is no floor. A `route.allowance_mm` set by hand sets the first term; the floor still
-  applies.
+  `allowance_trimmed_mm` 10.0; D = 5 (`[tolerance] design_mm`), so crimped or plugged at both ends gives route + 5
+  and a trimmed end route + 10. When a floor wins, the DESIGN row says "raised from <a> to <b> so the shortest cable
+  the maker may deliver (L - D) is still as long as the measured route" (or "still reaches" for the reach floor).
+  A `route.allowance_mm` set by hand sets the first term; the floors still apply.
 - Check: `cable_second_measure.py` rows DESIGN, LENGTH and REACH. REACH fails only when a length was forced below the
   design length by hand; SBEND at L + D stays the real limit (CB-14).
-- Why: the first rule (route + 2, +-2) met a maker that works at +-3 and +-5; a crimped cable 2 mm longer than its
-  route is up to 3 mm too short at -5.
+- Why: the first rule (route + 2, +-2) met a maker whose floor is +-5: a cable 2 mm longer than its route is up to
+  3 mm too short at -5, and every length had to be raised after the maker refused a tighter tolerance.
 
 ### CB-14 Short stiff cables between two fixed ends: the S-bend risk
 - Rule: a short coax or network cable between two fixed connectors on parallel axes takes an S. A few millimetres
   too long tightens the S below the minimum radius; too short and it does not reach. If no whole-millimetre length
   works at the design tolerance (the SBEND row at L + D says so), change the design: more offset, a longer run, an end trimmed at assembly, a more
-  flexible cable. Do not tighten the tolerance.
+  flexible cable. Do not tighten the tolerance: it cannot be bought (CB-12).
 - Number: an example: 1 mm more length can take a short coax from a comfortable radius to below its minimum.
 - Check: `cable_second_measure.py` row SBEND (planar S between parallel axes only).
 - Why: after a panel group moved a few millimetres, an already ordered short coax was left with a marginal bend.
@@ -189,7 +194,8 @@ How to read a rule: the rule; **Number** with its source; **Check**; **Why**.
 - Check: `cable_check.py` rows SPEC and NONDEF (every stock default is either in `non_defaults` or in
   `accept_defaults`).
 - Why: a bare coax family name was read as the maker's stock version of that family: jacketed and thicker than the
-  bare cable the route was designed for. A slim network cable came back as the standard thick one.
+  bare cable the route was designed for. A slim network cable came back as the standard thick one. Both then proved
+  to be the maker's only stock (CB-26): "X, NOT Y" gets what the maker makes, not what it does not.
 
 ### CB-22 No loose extras
 - Rule: a cable order holds cables. Spare heat-shrink, spare terminals and loose parts go into the parts order.
@@ -202,6 +208,19 @@ How to read a rule: the rule; **Number** with its source; **Check**; **Why**.
   the cable or its part), which is never drawn.
 - Check: `cable_drawings.py` rows WORDS and PLACEHOLDER; `catalogue_scan.py` on the upload folder.
 - Why: "please confirm +-2; if not, use the other column" invited the only question of the quote.
+
+### CB-26 Design for the maker's only stock
+- Rule: where the maker stocks one cable for a type, design the route, the bend radii and the clearances for that
+  cable from the start, and accept it as a default. A cable it does not stock means a custom tool (a mould for
+  moulded plugs) at a high cost, or the line refunded: budget it with the user before the quote, or buy a ready-made
+  cable instead (an angled patch cable).
+- Number: as read 2026-11 (capability sheet `[[stock_defaults]]`): RF coax only blue FEP-jacketed RG405, 2.2 to
+  2.6 mm (size for 2.6); network cable with moulded 90-degree plugs only Cat6 24 AWG, 5.8 mm (a slim 28 AWG of
+  3.8 mm needs a custom mould).
+- Check: `cable_check.py` row NONDEF (the stock cable in `accept_defaults`); `cable_route.py` rows BEND and CLEAR with
+  the stock diameter and radius; the cable-drawing review (h).
+- Why: cable types the maker does not stock came back as e-mail questions after the first revision round, one with
+  a custom-mould price, and the routes had to be checked again for the stock cables.
 
 ## Quick formulas
 
