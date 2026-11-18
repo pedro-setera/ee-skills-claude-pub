@@ -40,7 +40,7 @@ Read every datasheet in full and turn it into project documents: the reference c
    - where analog and power ground join;
    - the thermal pad and its vias, keep-outs, copper area for heat;
    - the maker's advice on the layer stack;
-   - each digital driver's rise time at its fast corner and the slowest drive or slew setting that meets timing, also written into the design note for layout and firmware (`references/pcb-rules/mcu-digital.md` MCU-46).
+   - each digital driver's rise time at its fast corner, with its source (datasheet, IBIS model, or an assumption marked ASSUMED: `references/pcb-rules/mcu-digital.md` MCU-48), and the slowest drive or slew setting that meets timing, also written into the design note for layout and firmware (MCU-46).
    Add the rules every board gets, from the template.
 10. Record the land pattern and the 3D model source per part:
     - The page of the maker's land pattern, and JLCPCB's own footprint fetched into `vendor/jlc_fp/` (paced as in step 1). Note where the two differ; the maker's pattern is the reference for power magnetics and fine pitch.

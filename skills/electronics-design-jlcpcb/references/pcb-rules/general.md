@@ -168,7 +168,7 @@ Starting widths, starting points only (short outer copper, 1 oz finished, FR-4, 
 
 ## 8. Impedance control: where it applies and where it does not
 
-Controlled impedance is for electrically long lines, not a mark of quality. Rule of thumb: control it when a line is longer than about one sixth of the distance its edge travels during the rise time (about 15 cm per ns on FR-4). Take the rise time from the driver's datasheet at its fast corner, never from the clock rate (`mcu-digital.md` MCU-46).
+Controlled impedance is for electrically long lines, not a mark of quality. Rule of thumb: control it when a line is longer than about one sixth of the distance its edge travels during the rise time (about 15 cm per ns on FR-4). Take the rise time from the driver's datasheet at its fast corner, never from the clock rate (`mcu-digital.md` MCU-46); where the datasheet does not give it, from the IBIS model or a written assumption (MCU-48). The same limit is often written as a twelfth of the wavelength at the edge's knee frequency, 0.5 / t_r.
 
 | Net type | Target | Controlled impedance? |
 |---|---|---|
@@ -176,6 +176,10 @@ Controlled impedance is for electrically long lines, not a mark of quality. Rule
 | Converter switch node | Small area, short, wide enough for RMS current | No; a 50 ohm target is wrong |
 | USB-C CC lines (PD signalling) | Short, referenced, ESD at the connector | No; never a 90 ohm pair |
 | USB 2.0 D+/D- | 90 ohm differential, +-15 % | High speed: yes; full speed on a short board: usually not (`usb.md`) |
+| Ethernet between PHY and magnetics or jack | 100 ohm differential; tolerance from the PHY maker's layout guide (often +-10 %) | Yes: the PHY maker's guide, and the pair rules of `usb.md` USB-52 to USB-54 |
+| Ethernet MAC to PHY (RMII, RGMII) | Single-ended as the PHY maker's guide says (commonly 50 ohm); series resistor at the driver (`mcu-digital.md` MCU-47); lengths matched where the guide asks | RGMII: yes; RMII: when longer than the line limit |
+| LVDS, camera and display links (MIPI) | 100 ohm differential (MIPI: as its chip maker's guide says, commonly 100 ohm) | Yes: the chip maker's guide, and the pair rules of `usb.md` USB-52 to USB-54 |
+| USB 3, HDMI, PCIe, SATA and other multi-gigabit links | 85 to 100 ohm differential, as the standard says | Beyond the proven range (SKILL.md): say so in phase 1 |
 | I2C, UART, slow SPI, reset, buttons | Nearby reference, controlled rise time | Only if rise time, length or a test demands it |
 | RF lines and antenna feeds | 50 ohm, or the part's stated impedance | Yes (`rf.md`) |
 
