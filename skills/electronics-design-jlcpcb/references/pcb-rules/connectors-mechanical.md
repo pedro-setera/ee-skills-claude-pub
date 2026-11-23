@@ -47,7 +47,8 @@ Contents
 
 - MECH-30 MUST draw a section view through every panel connector with the real mating plug (overmold, latch, nut) through the real wall, and state wall thickness, pocket, mating depth and clearance. Why: a receptacle too far inside the board could not take its plug through a thick wall.
 - MECH-31 MUST model flanges and shells that pass the routed edge, and agree a land or recess with the enclosure design. Why: a flange below the board top hits the wall unless edge and wall are agreed.
-- MECH-32 MUST align LEDs and light pipes with their wall holes and check them visible from outside. Why: an indicator hidden behind the wall is useless.
+- MECH-32 MUST align LEDs and light pipes with their wall holes and check them visible from outside, with LEDs far enough apart, or walled off, that one LED's light does not show in its neighbour's hole. Why: an indicator hidden behind the wall, or lit by its neighbour, is useless.
+- MECH-93 SHOULD keep tracks and vias out from under the metal shell or body of a part that rests on the board (a receptacle shell, a metal switch or crystal can, a shield can's lid edge), unless the maker's land pattern allows them there; any via there is tented. Why: solder mask is a thin insulator that a shell pressed onto the board can wear through, and the short is hidden under the part.
 - MECH-33 MUST write a thread budget for every threaded panel connector (`rf.md` RF-23). Why: a short thread leaves the plug half engaged.
 
 ## 5. Mating housings, cables and mis-plugging

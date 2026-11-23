@@ -70,6 +70,7 @@ Fabricator and assembler numbers change: take them from `references/jlcpcb/capab
 - DFM-71 MUST make every courtyard cover its pads and body plus a margin, keep courtyard rules as DRC errors, and draw real courtyards on custom parts. Why: library courtyards that followed the body were smaller than the pads, so overlaps went unseen.
 - DFM-72 MUST derive every placement rotation and origin from the assembler's own footprint with `scripts/jlc_rotations.py` (phase 12), matching two-pin polarised parts by their polarity mark, not by pad number. Why: a generic rotation table would have placed every three-pin transistor wrong and an electrolytic reversed.
 - DFM-73 SHOULD place polarised parts in a few common orientations. Why: faster optical and visual inspection.
+- DFM-105 MUST change a reference designator only in the schematic and update the board from it; a connector's or jumper's function goes on the board as a silkscreen text, never as a changed designator. Why: the BOM and the placement file carry the designators, and parts whose designators were changed on the board alone were left unfitted at assembly.
 
 ## 9. Router artefacts
 
