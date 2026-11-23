@@ -52,7 +52,7 @@ Fabricator and assembler numbers change: take them from `references/jlcpcb/capab
 
 ## 6. Solder mask and paste
 
-- DFM-50 MUST check the mask web between fine-pitch pads against the fabricator's minimum and use the pad definition the maker recommends (solder-mask-defined or not). Why: a web below the minimum disappears and fine-pitch pins bridge.
+- DFM-50 MUST check the mask web between fine-pitch pads against the fabricator's minimum for the chosen mask colour and copper weight and use the pad definition the maker recommends (solder-mask-defined or not). Why: a web below the minimum disappears and fine-pitch pins bridge.
 - DFM-51 MUST draw the mask openings with the clearance they need (typically 0.05 mm per side, or solder-mask-defined where the maker says so), then order the mask "as per Gerber, no extra expansion". Why: an added expansion opens the tented vias beside pads and removes thin webs, and openings drawn 1:1 with the pads let the mask's registration error (about +-0.05 mm; estimate) cover pad edges.
 - DFM-52 MUST use the maker's paste pattern for exposed pads (windowpane, often 50-80 % coverage) and give hand-fit pads no paste. Why: full paste on an exposed pad floats the part, and paste on hand-fit pads leaves solder blobs.
 - DFM-53 SHOULD give both pads of a small passive similar copper (spokes on the pour side) where one pad sits on a large pour. Why: uneven heating tombstones small parts.

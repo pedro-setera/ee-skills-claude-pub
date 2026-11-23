@@ -24,6 +24,10 @@
 #     between a via and a pad, must not have one, or it never fires.
 #   - A minimum connection width finds NECKS between wider copper. Copper that is narrow everywhere is not a
 #     neck: check track widths with track_width.
+#   - Later rules take precedence over earlier ones (KiCad's own rule help): a rule for one part or one area
+#     goes AFTER the board-wide rule it narrows or relaxes.
+#   - Board Setup > Constraints is a floor that no rule can go below: set it to the smallest value used
+#     anywhere (a relaxed fine-pitch area included) and let the rules below hold the board-wide value.
 #
 # Why custom rules and not only "Board Setup": the board-setup minimums are one number for the whole board.
 # These rules add what board setup cannot say: per net class, per layer, text against pads, a via hole against
@@ -177,6 +181,17 @@
 (rule "thermal relief: at least two spokes"
   (severity error)
   (constraint min_resolved_spokes 2))
+
+# ---------------------------------------------------------------------------------------------------------
+# 7b. EXAMPLE, only where one part needs it (general.md GEN-65): relax width and spacing inside that part's
+# courtyard, never for the whole board. It must stay AFTER section 1, and its values above the fabricator's
+# minimum. Remove the "# " of each line and set the reference; for a drawn rule area use
+# A.intersectsArea('<area name>') instead.
+# (rule "fine-pitch fan-out at U3"
+#   (severity error)
+#   (constraint track_width (min 0.12mm))
+#   (constraint clearance (min 0.12mm))
+#   (condition "A.intersectsCourtyard('U3')"))
 
 # ---------------------------------------------------------------------------------------------------------
 # 8. EXAMPLES: minimum widths per net class. Replace by the board's own classes, one block per class.
